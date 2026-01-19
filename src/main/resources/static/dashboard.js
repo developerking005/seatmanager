@@ -155,6 +155,9 @@ function openStudentModal(seatNumber) {
             document.getElementById("detailExpireDate").value = student.expiryDate;
             document.getElementById("detailAmount").value = student.amountPaid;
 
+                 // 🔥 NEW
+                  loadAvailableSeats(seatNumber);
+
             document.getElementById("studentModal").style.display = "block";
         })
         .catch(err => alert(err.message));
@@ -182,7 +185,8 @@ function updateStudent() {
         name: document.getElementById("detailName").value,
         phone: document.getElementById("detailPhone").value,
         amountPaid: document.getElementById("detailAmount").value,
-        expireDate: document.getElementById("detailExpireDate").value
+        expireDate: document.getElementById("detailExpireDate").value,
+         seatNumber: parseInt(document.getElementById("detailSeatNumber").value)
     };
 
     fetch(`/api/student/${currentStudentId}`, {
@@ -243,6 +247,14 @@ function renderExpiryList(data) {
 
     data.forEach(s => {
       const tr = document.createElement("tr");
+
+      // 🔥 decide row color
+        const rowClass = getExpiryClass(s.expireDate);
+        if (rowClass) {
+          tr.classList.add(rowClass);
+        }
+
+
      tr.innerHTML = `
          <td>${s.seatNumber}</td>
          <td>${s.name}</td>
@@ -276,11 +288,66 @@ Thank you 🙏
 }
 
 
+//date calculation logic / check weather we need it or not
+function daysBetween(today, expiry) {
+  const oneDay = 24 * 60 * 60 * 1000;
+  return Math.floor((expiry - today) / oneDay);
+}
+
+function getExpiryClass(expiryDateStr) {
+  if (!expiryDateStr) return "";
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  const expiry = new Date(expiryDateStr);
+  expiry.setHours(0, 0, 0, 0);
+
+  const diffDays = daysBetween(today, expiry);
+
+  if (diffDays <= 0) {
+    return "expired";           // today or past
+  } else if (diffDays <= 3) {
+    return "expiring-soon";     // 1–3 days left
+  }
+  return "";
+}
+
+
+
+
+//
+function loadAvailableSeats(currentSeat) {
+  fetch("/api/seats")
+    .then(res => res.json())
+    .then(seats => {
+      const select = document.getElementById("detailSeatNumber");
+      select.innerHTML = "";
+
+      seats.forEach(seat => {
+        // show vacant seats + current seat
+        if (!seat.occupied || seat.seatNumber === currentSeat) {
+          const option = document.createElement("option");
+          option.value = seat.seatNumber;
+          option.text = seat.seatNumber;
+          if (seat.seatNumber === currentSeat) {
+            option.selected = true;
+          }
+          select.appendChild(option);
+        }
+      });
+    });
+}
+
+
 
 //forcing to close the student object again and again
 window.onload = () => {
     document.getElementById("bookingModal").style.display = "none";
     document.getElementById("studentModal").style.display = "none";
 };
+
+
+
 
 

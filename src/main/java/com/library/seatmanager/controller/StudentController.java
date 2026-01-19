@@ -2,15 +2,17 @@ package com.library.seatmanager.controller;
 
 import com.library.seatmanager.dto.StudentTableResponse;
 import com.library.seatmanager.dto.StudentUpdateRequest;
+import com.library.seatmanager.entity.Seat;
 import com.library.seatmanager.entity.Student;
+import com.library.seatmanager.repository.SeatRepository;
 import com.library.seatmanager.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/student")
@@ -19,6 +21,9 @@ public class StudentController {
 
     @Autowired
     private StudentRepository studentRepo;
+
+    @Autowired
+    private SeatRepository seatRepo;
 
     @GetMapping("/seat/{seatNumber}")
     public ResponseEntity<Student> getStudentBySeat(@PathVariable int seatNumber) {
@@ -49,6 +54,24 @@ public class StudentController {
         if (req.getSeatNumber() != null) {
             student.setSeatNumber(req.getSeatNumber());
         }
+
+//        if (student.getSeatNumber()!=(req.getSeatNumber())) {
+//
+//            // 1️⃣ Free old seat
+//            Optional<Seat> oldSeat = seatRepo.findBySeatNumber(student.getSeatNumber());
+//            oldSeat.get().setOccupied(false);
+//            oldSeat.setStudent(null);
+//            seatRepo.save(oldSeat.get());
+//
+//            // 2️⃣ Assign new seat
+//            Optional<Seat> newSeat = seatRepo.findBySeatNumber(req.getSeatNumber());
+//            newSeat.get().setOccupied(true);
+//            newSeat.setStudent(student);
+//            seatRepo.save(newSeat.get());
+//
+//            // 3️⃣ Update student
+//            student.setSeatNumber(req.getSeatNumber());
+//        }
 
         if (req.getEndDate() != null) {
             student.setEndDate(req.getEndDate());

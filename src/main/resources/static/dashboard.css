@@ -222,3 +222,15 @@ after this css is for Header section
 .table th {
   background-color: #f4f4f4;
 }
+
+
+/* Expiry status colors */
+.expired {
+  background-color: #ffe5e5;   /* light red */
+  color: #a40000;
+}
+
+.expiring-soon {
+  background-color: #fff3cd;   /* light yellow */
+  color: #856404;
+}
