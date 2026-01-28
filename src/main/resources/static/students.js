@@ -7,22 +7,45 @@ fetch("/api/student")
     const table = document.getElementById("studentsTable");
     table.innerHTML = "";
 
+//    data.forEach(s => {
+//      const row = document.createElement("tr");
+//
+//      row.innerHTML = `
+//        <td>${s.seatNumber}</td>
+//        <td>${s.name}</td>
+//        <td>${s.phone}</td>
+//        <td>${formatDate(s.startDate)}</td>
+//        <td>${formatDate(s.endDate)}</td>
+//        <td>₹${s.amount}</td>
+//        <td>
+//          <button onclick="${s.id}">Vacate</button>
+//        </td>
+//      `;
+//      row.onclick = () => vacate(s.id);
+//
+//      table.appendChild(row);
+//    });
+
     data.forEach(s => {
       const row = document.createElement("tr");
-
-      row.innerHTML = `
-        <td>${s.seatNumber}</td>
-        <td>${s.name}</td>
-        <td>${s.phone}</td>
-        <td>${formatDate(s.startDate)}</td>
-        <td>${formatDate(s.endDate)}</td>
-        <td>₹${s.amount}</td>
-        <td>
-          <button onclick="${s.id}">Vacate</button>
-        </td>
-      `;
-      row.onclick = () => vacate(s.id);
-
+      row.classList.add("student-row");
+       row.innerHTML = `
+          <td>${s.seatNumber}</td>
+          <td>${s.name}</td>
+          <td>${s.phone}</td>
+          <td>${formatDate(s.endDate)}</td>
+          <td>₹${s.amount}</td>
+          <td>
+            <button onclick="vacate(${s.id}); event.stopPropagation()">Vacate</button>
+          </td>
+        `;
+      // 🔥 THIS IS IMPORTANT
+      row.addEventListener("click", () => {
+        document.querySelectorAll(".table tr").forEach(r => r.classList.remove("active"));
+        row.classList.add("active");
+        loadStudentProfile(s);
+      });
+//      row.onclick = () => openProfile(s);
       table.appendChild(row);
     });
   })
@@ -94,4 +117,42 @@ function searchStudents() {
   fetch(url)
     .then(res => res.json())
     .then(renderStudentTable);
+}
+
+
+
+function openProfile(s) {
+  document.getElementById("studentProfile").innerHTML = `
+    <div class="profile">
+      <h3>${s.name}</h3>
+      <p>${s.phone}</p>
+
+      <hr>
+
+      <p><b>Seat:</b> ${s.seatNumber}</p>
+      <p><b>Joined:</b> ${formatDate(s.startDate)}</p>
+      <p><b>Expires:</b> ${formatDate(s.endDate)}</p>
+
+      <p class="badge ${s.active ? "active" : "expired"}">
+        ${s.active ? "Active" : "Expired"}
+      </p>
+    </div>
+  `;
+}
+
+
+
+function loadStudentProfile(s) {
+  const panel = document.getElementById("studentProfile");
+  panel.classList.remove("hidden");
+
+  document.getElementById("pName").innerText = s.name;
+  document.getElementById("pPhone").innerText = s.phone;
+  document.getElementById("pSeat").innerText = s.seatNumber;
+
+  document.getElementById("pJoined").innerText =
+    s.startDate ? formatDate(s.startDate) : "-";
+
+  document.getElementById("pExpire").innerText =
+    s.endDate ? formatDate(s.endDate) : "-";
 }

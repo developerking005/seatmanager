@@ -1,0 +1,31 @@
+/* No seat column adjustments */
+.student-table td,
+.student-table th {
+  vertical-align: middle;
+}
+
+/* Shift badges */
+.badge.morning {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.badge.evening {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal.hidden {
+  display: none;
+}

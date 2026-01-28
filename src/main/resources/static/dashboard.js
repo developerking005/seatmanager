@@ -1,12 +1,23 @@
-fetch("http://localhost:8080/api/dashboard")
+let allAlerts = [];
+let showAllAlerts = false;
+
+//fetch("http://localhost:8080/api/dashboard")
+//  .then(res => res.json())
+//  .then(data => {
+//    document.getElementById("totalSeats").innerText = data.totalSeats;
+//    document.getElementById("filledSeats").innerText = data.filledSeats;
+//    document.getElementById("vacantSeats").innerText = data.vacantSeats;
+//    document.getElementById("totalCollection").innerText = "₹" + data.totalCollection;
+//  });
+
+fetch("http://localhost:8080/api/dashboards")
   .then(res => res.json())
   .then(data => {
-    document.getElementById("totalSeats").innerText = data.totalSeats;
-    document.getElementById("filledSeats").innerText = data.filledSeats;
-    document.getElementById("vacantSeats").innerText = data.vacantSeats;
-    document.getElementById("totalCollection").innerText = "₹" + data.totalCollection;
+      document.getElementById("totalSeats").innerText = data.totalSeats;
+      document.getElementById("filledSeats").innerText = data.filledSeats;
+      document.getElementById("vacantSeats").innerText = data.vacantSeats;
+      document.getElementById("halfDayCount").innerText = data.halfDayStudents;
   });
-
 
 fetch("http://localhost:8080/api/seats")
   .then(res => res.json())
@@ -16,7 +27,7 @@ function renderSeats(seats) {
     const container = document.getElementById("seatContainer");
     container.innerHTML = "";
 
-    const seatsPerRow = 6;
+    const seatsPerRow = 10;
     let row = [];
 
     seats.forEach((seat, index) => {
@@ -65,7 +76,8 @@ function confirmBooking() {
         seatNumber: selectedSeat,
         name: document.getElementById("name").value,
         phone: document.getElementById("phone").value,
-        amountPaid: document.getElementById("amount").value
+        amountPaid: document.getElementById("amount").value,
+        studentType: "FULL_DAY"
     };
 
     fetch("http://localhost:8080/api/book", {
@@ -206,69 +218,118 @@ function updateStudent() {
     .catch(err => alert(err.message));
 }
 
+
+
+
 //when dashboard page load
 loadExpiryNotifications();
 
 function loadExpiryNotifications() {
-  fetch("/api/student/expiring-soon")
-    .then(res => res.json())
-    .then(renderExpiryList);
+//  fetch("/api/student/expiring-soon")
+//    .then(res => res.json())
+//    .then(renderExpiryList);
+    Promise.all([
+        fetch("/api/student/expiring-soon").then(r => r.json()),
+        fetch("/api/student/expired").then(r => r.json())
+      ]).then(([expiring, expired]) => {
+        renderExpiryList([...expired, ...expiring]);
+      });
 }
 
-//
-//data.forEach(s => {
-//  const tr = document.createElement("tr");
-// tr.innerHTML = `
-//     <td>${s.seatNumber}</td>
-//     <td>${s.name}</td>
-//     <td>${s.phone}</td>
-//     <td>${s.expireDate ? s.expireDate : "-"}</td>
-//     <td>₹${s.amountPaid}</td>
-//     <td>
-//       <button onclick="editStudent(${s.id}">Edit</button>
-//       <button onclick="sendReminder('${s.phone}', '${s.name}', ${s.seatNumber}, '${s.expiryDate}')">Send</button>
-//     </td>
-//  `;
 
+//function renderExpiryList(data) {
+//  const box = document.getElementById("expiryBody");
+//  box.innerHTML = "";
+//    data.forEach(s => {
+////      const statusClass = getExpiryClass(s.expiryDate);
+//        const tr = document.createElement("tr");
+//      // 🔥 decide row color
+//        const rowClass = getExpiryClass(s.expireDate);
+//        if (rowClass) {
+//          tr.classList.add(rowClass);
+//        }
+//     tr.innerHTML = `
+//         <td>${s.seatNumber}</td>
+//         <td>${s.name}</td>
+//         <td>${s.phone}</td>
+//         <td>${s.expireDate ? s.expireDate : "-"}</td>
+//         <td>₹${s.amountPaid}</td>
+//         <td>
+//           <button onclick="editStudent(${s.id}">Edit</button>
+//           <button onclick="sendReminder('${s.phone}', '${s.name}', ${s.seatNumber}, '${s.expireDate}')">Send</button>
+//         </td>
+//    `;
+//    box.appendChild(tr);
+//  });
+//}
+
+
+
+////new JS for Expire subscription
 function renderExpiryList(data) {
+  allAlerts = data;
+
   const box = document.getElementById("expiryBody");
   box.innerHTML = "";
 
-//  data.forEach(s => {
-//    const row = document.createElement("div");
-//    row.innerHTML = `
-//      <b>${s.name}</b> (Seat ${s.seatNumber})<br>
-//      ${s.phone} | Expiry: ${s.expireDate}
-//      <br>
-//      <button onclick="editStudent(${s.id})">Edit</button>
-//      <button onclick="sendReminder('${s.phone}', '${s.name}', ${s.seatNumber}, '${s.expiryDate}')">
-//        Send
-//      </button>
+  const alertsToShow = showAllAlerts ? allAlerts : allAlerts.slice(0, 3);
 
-    data.forEach(s => {
-      const tr = document.createElement("tr");
+  alertsToShow.forEach(s => {
+    const statusClass = getExpiryClass(s.expireDate);
 
-      // 🔥 decide row color
-        const rowClass = getExpiryClass(s.expireDate);
-        if (rowClass) {
-          tr.classList.add(rowClass);
-        }
+    const div = document.createElement("div");
+    div.className = "alert-item";
 
+    div.innerHTML = `
+      <div class="alert-top">
+        <div class="alert-user">
+          <div class="avatar">
+            <i class="fa-solid fa-user"></i>
+          </div>
 
-     tr.innerHTML = `
-         <td>${s.seatNumber}</td>
-         <td>${s.name}</td>
-         <td>${s.phone}</td>
-         <td>${s.expireDate ? s.expireDate : "-"}</td>
-         <td>₹${s.amountPaid}</td>
-         <td>
-           <button onclick="editStudent(${s.id}">Edit</button>
-           <button onclick="sendReminder('${s.phone}', '${s.name}', ${s.seatNumber}, '${s.expireDate}')">Send</button>
-         </td>
+          <div class="user-info">
+            <div class="name">${s.name}</div>
+            <div class="meta">Seat: ${s.seatNumber}</div>
+          </div>
+        </div>
+
+        <span class="status ${statusClass}">
+          ${statusClass === "expired" ? "EXPIRED" : "EXPIRING SOON"}
+        </span>
+      </div>
+
+      <div class="alert-actions">
+        <button class="btn whatsapp"
+          onclick="sendReminder('${s.phone}', '${s.name}', ${s.seatNumber}, '${s.expiryDate}')">
+          <i class="fa-brands fa-whatsapp"></i> WhatsApp
+        </button>
+
+        <button class="btn call">
+          <i class="fa-solid fa-phone"></i> Call
+        </button>
+      </div>
     `;
-    box.appendChild(tr);
+
+    box.appendChild(div);
   });
+   updateViewAllText();
 }
+
+
+
+
+
+function toggleViewAll() {
+  showAllAlerts = !showAllAlerts;
+  renderExpiryList(allAlerts);
+}
+
+function updateViewAllText() {
+  const btn = document.querySelector(".view-all");
+  btn.innerText = showAllAlerts ? "Show Less" : "View All Alerts";
+}
+
+
 
 function sendReminder(phone, name, seat, expiry) {
   const msg = `
@@ -295,28 +356,33 @@ function daysBetween(today, expiry) {
 }
 
 function getExpiryClass(expiryDateStr) {
-  if (!expiryDateStr) return "";
+ if (!expiryDateStr) return null;
 
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const expiry = new Date(expiryDateStr);
+  const [year, month, day] = expiryDateStr.split("-").map(Number);
+  const expiry = new Date(year, month - 1, day);
   expiry.setHours(0, 0, 0, 0);
 
-  const diffDays = daysBetween(today, expiry);
+  const diffDays = Math.floor(
+    (expiry - today) / (1000 * 60 * 60 * 24)
+  );
 
-  if (diffDays <= 0) {
-    return "expired";           // today or past
+  console.log(diffDays)
+
+  if (diffDays < 0) {
+    return "expired";           // 🔴 already expired
+  } else if (diffDays === 0) {
+    return "expired";           // 🔴 expires today
   } else if (diffDays <= 3) {
-    return "expiring-soon";     // 1–3 days left
+    return "expiring-soon";     // 🟠 1–3 days left
   }
-  return "";
+
+  return null;
 }
 
 
-
-
-//
 function loadAvailableSeats(currentSeat) {
   fetch("/api/seats")
     .then(res => res.json())
@@ -351,3 +417,22 @@ window.onload = () => {
 
 
 
+//new card click functions
+function scrollToSeats() {
+  document.querySelector(".seat-card")
+    .scrollIntoView({ behavior: "smooth" });
+}
+
+function openActiveFullDayStudents() {
+  window.location.href = "/students.html";
+}
+
+function openHalfDayForm() {
+  window.location.href = "/halfday-student.html";
+}
+
+
+// ------------------------------------Now this is for Mobile JS -----------------------
+function goTo(path) {
+  window.location.href = path;
+}

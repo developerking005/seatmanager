@@ -1,0 +1,62 @@
+<meta charset="UTF-8">
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Library Seat Manager</title>
+    <link rel="stylesheet" href="newheader.css">
+</head>
+<body>
+<header class="app-header">
+
+    <!-- LEFT -->
+    <div class="header-left" onclick="goToDashboard()">
+        <img
+                src="/logo.png"
+                alt="Library Logo"
+                class="logo"
+        />
+        <span class="library-title">Success Library</span>
+    </div>
+
+    <!-- CENTER NAV -->
+    <nav class="header-nav">
+        <a href="/dashboard.html" class="nav-link">Dashboard</a>
+        <a href="/students.html" class="nav-link">Students</a>
+        <a href="/billing.html" class="nav-link">Billing</a>
+        <a href="/inventory.html" class="nav-link disabled" >Inventory</a>
+    </nav>
+
+    <!-- RIGHT PROFILE -->
+    <div class="header-right">
+        <div class="profile-wrapper">
+            <div class="profile-info" onclick="toggleProfileMenu()">
+                <div class="profile-text">
+                    <strong id="adminName">Admin User</strong>
+                </div>
+                <img src="./user.png" class="avatar" />
+            </div>
+
+            <div id="profileMenu" class="profile-menu">
+                <a href="/profile.html">Profile Details</a>
+                <a href="/students.html">Students</a>
+                <a href="/billing.html">Bills & Payments</a>
+                <hr />
+                <a onclick="logout()">Logout</a>
+            </div>
+        </div>
+    </div>
+
+</header>
+
+
+
+<script>
+    fetch("/newheader.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("headerContainer").innerHTML = html;
+      });
+</script>
+
+<script src="/newheader.js"></script>
+</body>

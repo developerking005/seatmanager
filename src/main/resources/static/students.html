@@ -4,36 +4,141 @@
     <meta charset="UTF-8">
     <title>Students</title>
     <link rel="stylesheet" href="/dashboard.css">
+    <link rel="stylesheet" href="/students.css">
 </head>
 <body>
 
 <div id="headerContainer"></div>
 
-<div class="content">
-    <h2>Students</h2>
-    <div class="search-bar">
-        <input type="text" id="searchName" placeholder="Search by name">
-        <input type="text" id="searchPhone" placeholder="Search by phone">
-        <input type="number" id="searchSeat" placeholder="Seat no">
-        <button onclick="searchStudents()">Search</button>
-        <button onclick="loadStudents()">Reset</button>
+<!--<div class="content">-->
+<!--    <h2>Students</h2>-->
+<!--    <div class="search-bar">-->
+<!--        <input type="text" id="searchName" placeholder="Search by name">-->
+<!--        <input type="text" id="searchPhone" placeholder="Search by phone">-->
+<!--        <input type="number" id="searchSeat" placeholder="Seat no">-->
+<!--        <button onclick="searchStudents()">Search</button>-->
+<!--        <button onclick="loadStudents()">Reset</button>-->
+<!--    </div>-->
+
+<!--    <table class="table">-->
+<!--        <thead>-->
+<!--        <tr>-->
+<!--            <th>Seat</th>-->
+<!--            <th>Name</th>-->
+<!--            <th>Phone</th>-->
+<!--            <th>Start Date</th>-->
+<!--            <th>End Date</th>-->
+<!--            <th>Amount</th>-->
+<!--            <th>Action</th>-->
+<!--        </tr>-->
+<!--        </thead>-->
+<!--        <tbody id="studentsTable"></tbody>-->
+<!--    </table>-->
+<!--</div>-->
+
+
+
+<!--new student section UI-->
+<div class="students-page">
+
+    <!-- LEFT PANEL -->
+    <div class="students-left">
+
+        <div class="students-header">
+            <div>
+                <h2>Student Records & KYC</h2>
+                <p class="subtitle">
+                    Manage memberships, identity verification, and seat allocations
+                </p>
+            </div>
+
+            <button class="primary-btn">
+                + Add New Student
+            </button>
+        </div>
+
+        <!-- FILTER TABS -->
+        <div class="student-tabs">
+            <button class="tab active">All Students</button>
+            <button class="tab">Active</button>
+            <button class="tab danger">Expired</button>
+        </div>
+
+        <!-- STUDENT TABLE -->
+        <div class="student-table-wrapper">
+            <table class="student-table">
+                <thead>
+                <tr>
+                    <th>Seat</th>
+                    <th>Student</th>
+                    <th>Phone</th>
+                    <th>EndDate</th>
+                    <th>Payment</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+                <tbody id="studentsTable"></tbody>
+            </table>
+        </div>
+
     </div>
 
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Seat</th>
-            <th>Name</th>
-            <th>Phone</th>
-            <th>Start Date</th>
-            <th>End Date</th>
-            <th>Amount</th>
-            <th>Action</th>
-        </tr>
-        </thead>
-        <tbody id="studentsTable"></tbody>
-    </table>
+    <!-- RIGHT PANEL -->
+    <div class="students-right">
+        <div class="profile-card hidden" id="studentProfile">
+
+            <div class="profile-avatar">
+                <img src="./user.png">
+                <span class="online-dot"></span>
+            </div>
+
+            <h3 id="pName">—</h3>
+            <p class="profile-sub" id="pPhone">—</p>
+
+            <div class="profile-actions">
+                <button class="btn-light">View Profile</button>
+                <button class="btn-icon">✉</button>
+            </div>
+
+            <hr>
+
+            <div class="profile-details">
+                <div><span>Seat</span><strong id="pSeat">—</strong></div>
+                <div><span>Joined</span><strong id="pJoined">—</strong></div>
+                <div>
+                    <span>Plan Expires</span>
+                    <strong id="pExpire" class="danger">—</strong>
+                </div>
+            </div>
+
+        </div>
+        <div>
+            <!-- History -->
+            <div class="history">
+                <h4>Seat Change History</h4>
+
+                <ul class="timeline">
+                    <li>
+                        <span class="dot active"></span>
+                        <div>
+                            <b>Jan 05, 2026</b>
+                            <p>Seat changed from 2 → 4</p>
+                        </div>
+                    </li>
+
+                    <li>
+                        <span class="dot"></span>
+                        <div>
+                            <b>Dec 01, 2025</b>
+                            <p>Plan renewed</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
 </div>
+
 
 <div id="editModal" class="modal hidden">
     <div class="modal-content">
@@ -61,12 +166,12 @@
 </div>
 
 <script>
-    fetch("/header.html")
+    fetch("/newheader.html")
       .then(res => res.text())
       .then(html => document.getElementById("headerContainer").innerHTML = html);
 </script>
 
-<script src="/header.js"></script>
+<script src="/newheader.js"></script>
 <script src="/students.js"></script>
 
 </body>

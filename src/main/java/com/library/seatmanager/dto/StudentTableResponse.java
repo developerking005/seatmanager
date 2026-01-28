@@ -24,7 +24,7 @@ public class StudentTableResponse {
         dto.setSeatNumber(s.getSeatNumber());
         dto.setStartDate(s.getStartDate());
         dto.setEndDate(s.getEndDate());
-        dto.setAmount(s.getAmount());
+        dto.setAmount(s.getAmountPaid());
         dto.setExpireDate(s.getExpiryDate());
         return dto;
     }

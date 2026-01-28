@@ -17,7 +17,7 @@ public class Student {
     private String name;
     private String phone;
 
-    private int seatNumber;
+    private Integer seatNumber;
 
     private int amount;
 
@@ -35,6 +35,20 @@ public class Student {
 
     private boolean active;
 
+    @Enumerated(EnumType.STRING)
+    private StudentType studentType;
+
+    @Enumerated(EnumType.STRING)
+    private HalfDaySlot halfDaySlot;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
@@ -43,28 +57,28 @@ public class Student {
         this.name = name;
     }
 
-    public boolean isActive() {
-        return active;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setActive(boolean active) {
-        this.active = active;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
-    public Seat getSeat() {
-        return seat;
+    public Integer getSeatNumber() {
+        return seatNumber;
     }
 
-    public void setSeat(Seat seat) {
-        this.seat = seat;
+    public void setSeatNumber(Integer seatNumber) {
+        this.seatNumber = seatNumber;
     }
 
-    public int getAmountPaid() {
-        return amountPaid;
+    public int getAmount() {
+        return amount;
     }
 
-    public void setAmountPaid(int amountPaid) {
-        this.amountPaid = amountPaid;
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 
     public LocalDate getExpiryDate() {
@@ -83,38 +97,6 @@ public class Student {
         this.bookingDate = bookingDate;
     }
 
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public int getSeatNumber() {
-        return seatNumber;
-    }
-
-    public void setSeatNumber(int seatNumber) {
-        this.seatNumber = seatNumber;
-    }
-
-    public int getAmount() {
-        return amount;
-    }
-
-    public void setAmount(int amount) {
-        this.amount = amount;
-    }
-
     public LocalDateTime getStartDate() {
         return startDate;
     }
@@ -131,6 +113,45 @@ public class Student {
         this.endDate = endDate;
     }
 
+    public int getAmountPaid() {
+        return amountPaid;
+    }
+
+    public void setAmountPaid(int amountPaid) {
+        this.amountPaid = amountPaid;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public Seat getSeat() {
+        return seat;
+    }
+
+    public void setSeat(Seat seat) {
+        this.seat = seat;
+    }
+
+    public StudentType getStudentType() {
+        return studentType;
+    }
+
+    public void setStudentType(StudentType studentType) {
+        this.studentType = studentType;
+    }
+
+    public HalfDaySlot getHalfDaySlot() {
+        return halfDaySlot;
+    }
+
+    public void setHalfDaySlot(HalfDaySlot halfDaySlot) {
+        this.halfDaySlot = halfDaySlot;
+    }
 
     @Override
     public String toString() {
@@ -147,18 +168,21 @@ public class Student {
                 ", amountPaid=" + amountPaid +
                 ", seat=" + seat +
                 ", active=" + active +
+                ", studentType=" + studentType +
+                ", halfDaySlot=" + halfDaySlot +
                 '}';
     }
+
 
     public Student() {
     }
 
-    public Student(Long id, String name, String phone, int amount, int seatNumber, LocalDate bookingDate, LocalDate expiryDate, LocalDateTime startDate, LocalDateTime endDate, int amountPaid, Seat seat, boolean active) {
+    public Student(Long id, String name, String phone, Integer seatNumber, int amount, LocalDate bookingDate, LocalDate expiryDate, LocalDateTime startDate, LocalDateTime endDate, int amountPaid, Seat seat, boolean active, StudentType studentType, HalfDaySlot halfDaySlot) {
         this.id = id;
         this.name = name;
         this.phone = phone;
-        this.amount = amount;
         this.seatNumber = seatNumber;
+        this.amount = amount;
         this.bookingDate = bookingDate;
         this.expiryDate = expiryDate;
         this.startDate = startDate;
@@ -166,6 +190,17 @@ public class Student {
         this.amountPaid = amountPaid;
         this.seat = seat;
         this.active = active;
+        this.studentType = studentType;
+        this.halfDaySlot = halfDaySlot;
+    }
+
+    public enum StudentType {
+        FULL_DAY,
+        HALF_DAY
+    }
+    public enum HalfDaySlot {
+        MORNING,   // 6 AM – 2 PM
+        EVENING    // 2 PM – 10 PM
     }
 }
 

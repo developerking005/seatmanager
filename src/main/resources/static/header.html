@@ -3,13 +3,14 @@
 <html>
 <head>
     <title>Library Seat Manager</title>
-    <link rel="stylesheet" href="dashboard.css">
+    <link rel="stylesheet" href="header.css">
 </head>
 <body>
 <header class="app-header">
 
     <div class="header-left">
         <img id="libraryLogo"
+             src="logo.png"
              class="logo"
              alt="Library Logo"
              style="cursor:pointer"
@@ -40,6 +41,24 @@
         </div>
     </div>
 </header>
+
+<!--<div class="header">
+
+  <div class="header-right">
+    <div class="profile-dropdown">
+      <button class="profile-btn">Library Admin ⌄</button>
+      <div class="dropdown-menu">
+        <a href="/profile.html">Profile</a>
+        <a href="/students.html">Students</a>
+        <a class="disabled">Bills & Payments</a>
+        <hr />
+        <a href="#" onclick="logout()">Logout</a>
+      </div>
+    </div>
+  </div>
+</div>-->
+
+
 <script>
     fetch("/header.html")
       .then(res => res.text())

@@ -1,0 +1,325 @@
+.billing-page {
+  padding: 24px;
+  background: #f6f8fc;
+}
+
+.billing-cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.billing-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.billing-card h2 {
+  margin: 10px 0;
+  font-size: 26px;
+}
+
+.billing-card span {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.billing-section {
+  margin-top: 30px;
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 20px;
+}
+
+.billing-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.billing-table th {
+  text-align: left;
+  color: #8a94a6;
+  padding-bottom: 12px;
+}
+
+.billing-table td {
+  padding: 14px 0;
+  border-top: 1px solid #eef1f6;
+}
+
+.status-paid {
+  color: #16a34a;
+  font-weight: 600;
+}
+
+.status-pending {
+  color: #f59e0b;
+  font-weight: 600;
+}
+
+
+
+/*billing card UI */
+.billing-card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  margin-top: 24px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+}
+
+.billing-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.expense-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.expense-table th {
+  text-align: left;
+  font-size: 13px;
+  color: #8a94a6;
+  padding-bottom: 12px;
+}
+
+.expense-table td {
+  padding: 14px 8px;
+  border-top: 1px solid #f1f3f8;
+}
+
+.badge.paid {
+  background: #e6f7ec;
+  color: #16a34a;
+}
+
+.badge.pending {
+  background: #fff4e5;
+  color: #d97706;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 40px;
+  color: #9aa3b2;
+}
+
+
+
+
+
+
+/* =========================
+   MODAL BASE
+========================= */
+
+.hidden {
+  display: none !important;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.modal-content {
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 16px;
+  width: 420px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.modal-content h3 {
+  margin-bottom: 16px;
+}
+
+.modal-content label {
+  display: block;
+  margin-top: 12px;
+  font-size: 14px;
+  color: #6b7280;
+}
+
+.modal-content input,
+.modal-content select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+
+
+
+/* =========================
+   EXPENSE TABLE UI
+========================= */
+
+.expense-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.expense-table th {
+  text-align: left;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: #6b7280;
+  padding: 14px 8px;
+}
+
+.expense-table td {
+  padding: 16px 8px;
+  border-top: 1px solid #eef1f6;
+  vertical-align: middle;
+}
+
+/* Category cell */
+.category-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+}
+
+.cat-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+}
+
+.cat-icon.rent {
+  background: #fff1e6;
+  color: #ea580c;
+}
+
+.cat-icon.electric {
+  background: #eef2ff;
+  color: #4f46e5;
+}
+
+.cat-icon.wifi {
+  background: #ecfeff;
+  color: #0891b2;
+}
+
+.cat-icon.default {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+/* Amount */
+.amount {
+  font-weight: 700;
+}
+
+/* Status badge */
+.status-badge {
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.status-badge.paid {
+  background: #e6f7ec;
+  color: #16a34a;
+}
+
+.status-badge.pending {
+  background: #fff4e5;
+  color: #d97706;
+}
+
+/* Receipt */
+.receipt-link {
+  color: #2563eb;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.no-receipt {
+  color: #9aa3b2;
+  font-style: italic;
+}
+
+/* Actions */
+.actions {
+  display: flex;
+  gap: 10px;
+}
+
+/* Add button */
+.primary-btn {
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 6px 18px rgba(79,172,254,0.35);
+}
+
+.primary-btn:hover {
+  opacity: 0.9;
+}
+
+.icon-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.icon-btn:hover {
+  color: #2563eb;
+}
+
+.icon-btn.danger:hover {
+  color: #dc2626;
+}
+
+.card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-icon {
+  font-size: 20px;
+  opacity: 0.85;
+}
+
+/* optional subtle color hints (can remove if you want) */
+.card-icon.revenue { color: #16a34a; }
+.card-icon.expense { color: #dc2626; }
+.card-icon.profit { color: #2563eb; }
+.card-icon.projected { color: #9333ea; }
+
+

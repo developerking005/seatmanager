@@ -50,6 +50,7 @@ public class BookingController {
         student.setSeatNumber(seat.getSeatNumber());
         student.setAmountPaid(req.getAmountPaid());
         student.setBookingDate(LocalDate.now());
+        student.setStudentType(req.getStudentType());
         student.setExpiryDate(LocalDate.now().plusDays(30));
         student.setEndDate(LocalDateTime.now().plusDays(30));
         student.setActive(true);

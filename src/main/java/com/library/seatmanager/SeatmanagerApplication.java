@@ -43,7 +43,7 @@ public class SeatmanagerApplication {
 
 			if (adminRepo.count() == 0) {
 				Admin admin = new Admin();
-				admin.setName("Library Admin");
+				admin.setName("Library admin");
 				admin.setPhone("9999999999");
 				admin.setPassword(encoder.encode("admin@123"));
 				adminRepo.save(admin);
@@ -51,7 +51,7 @@ public class SeatmanagerApplication {
 
 			if (libraryRepo.count() == 0) {
 				Library lib = new Library();
-				lib.setLibraryName("My Library Name");
+				lib.setLibraryName("Success Library");
 				lib.setTotalSeats(65);
 				libraryRepo.save(lib);
 			}

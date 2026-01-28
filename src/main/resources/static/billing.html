@@ -1,0 +1,117 @@
+<meta charset="UTF-8">
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Library Seat Manager</title>
+    <link rel="stylesheet" href="billing.css">
+    <script src="https://kit.fontawesome.com/70513bf846.js" crossorigin="anonymous"></script>
+</head>
+<body>
+<div id="headerContainer"></div>
+<div class="billing-page">
+
+    <div class="billing-cards">
+        <div class="billing-card" id="revenueCard"></div>
+        <div class="billing-card" id="expenseCard"></div>
+        <div class="billing-card" id="profitCard"></div>
+        <div class="billing-card" id="projectedCard"></div>
+    </div>
+
+    <!-- EXPENSE SECTION -->
+    <div class="billing-card">
+
+        <div class="billing-header">
+            <h3>Recent Expenditures</h3>
+            <button class="primary-btn" onclick="openExpenseModal()">
+                + Add Expense
+            </button>
+        </div>
+
+        <table class="expense-table">
+            <thead>
+            <tr>
+                <th>Category</th>
+                <th>Transaction Date</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Receipt</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody id="expenseBody"></tbody>
+        </table>
+
+        <div id="expenseEmpty" class="empty-state hidden">
+            No expenses added yet
+        </div>
+
+    </div>
+</div>
+
+<!-- ADD EXPENSE MODAL -->
+<div id="expenseModal" class="modal hidden">
+    <div class="modal-content">
+        <h3>Add Expense</h3>
+
+        <label>Category</label>
+        <input id="exCategory" placeholder="Rent / Electricity / Wifi">
+
+        <label>Amount</label>
+        <input id="exAmount" type="number">
+
+        <label>Date</label>
+        <input id="exDate" type="date">
+
+        <label>Status</label>
+        <select id="exStatus">
+            <option value="PAID">Paid</option>
+            <option value="PENDING">Pending</option>
+        </select>
+
+        <div class="modal-actions">
+            <button class="primary-btn" onclick="saveExpense()">Save</button>
+            <button class="btn-light" onclick="closeExpenseModal()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+
+<!-- EDIT EXPENSE MODAL -->
+<div id="editExpenseModal" class="modal hidden">
+    <div class="modal-content">
+        <h3>Edit Expense</h3>
+
+        <input type="hidden" id="editId">
+
+        <label>Category</label>
+        <input id="editCategory">
+
+        <label>Amount</label>
+        <input id="editAmount" type="number">
+
+        <label>Date</label>
+        <input id="editDate" type="date">
+
+        <label>Status</label>
+        <select id="editStatus">
+            <option value="PAID">Paid</option>
+            <option value="PENDING">Pending</option>
+        </select>
+
+        <div class="modal-actions">
+            <button class="primary-btn" onclick="updateExpense()">Update</button>
+            <button class="btn-light" onclick="closeEditExpense()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    fetch("/newheader.html")
+      .then(res => res.text())
+      .then(html => document.getElementById("headerContainer").innerHTML = html);
+</script>
+<script src="/newheader.js"></script>
+<script src="/billing.js"></script>
+</body>
+</html>
+
