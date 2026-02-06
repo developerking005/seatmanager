@@ -3,6 +3,8 @@ package com.library.seatmanager.entity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Admin {
@@ -21,6 +23,10 @@ public class Admin {
     // OTP related
     private String otp;
     private LocalDateTime otpExpiry;
+
+
+    @OneToMany(mappedBy = "admin", cascade = CascadeType.ALL)
+    private List<Library> libraries = new ArrayList<>();
 
     public Long getId() {
         return id;
@@ -70,16 +76,12 @@ public class Admin {
         this.otpExpiry = otpExpiry;
     }
 
-    public Admin(Long id, LocalDateTime otpExpiry, String otp, String password, String phone, String name) {
-        this.id = id;
-        this.otpExpiry = otpExpiry;
-        this.otp = otp;
-        this.password = password;
-        this.phone = phone;
-        this.name = name;
+    public List<Library> getLibraries() {
+        return libraries;
     }
 
-    public Admin() {
+    public void setLibraries(List<Library> libraries) {
+        this.libraries = libraries;
     }
 
     @Override
@@ -91,6 +93,20 @@ public class Admin {
                 ", password='" + password + '\'' +
                 ", otp='" + otp + '\'' +
                 ", otpExpiry=" + otpExpiry +
+                ", libraries=" + libraries +
                 '}';
+    }
+
+    public Admin() {
+    }
+
+    public Admin(Long id, String name, String phone, String password, String otp, LocalDateTime otpExpiry, List<Library> libraries) {
+        this.id = id;
+        this.name = name;
+        this.phone = phone;
+        this.password = password;
+        this.otp = otp;
+        this.otpExpiry = otpExpiry;
+        this.libraries = libraries;
     }
 }

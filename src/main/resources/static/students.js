@@ -1,30 +1,27 @@
-fetch("/api/student")
+const CURRENT_LIBRARY_ID =
+  localStorage.getItem("LIBRARY_ID")
+    ? Number(localStorage.getItem("LIBRARY_ID"))
+    : null;
+
+if (!CURRENT_LIBRARY_ID) {
+  alert("Library not loaded");
+  throw new Error("Library missing");
+}
+console.log(
+  "Student API URL:",
+  `/api/student/library/${CURRENT_LIBRARY_ID}`
+);
+fetch(`/api/student/library/${CURRENT_LIBRARY_ID}`)
   .then(res => {
+    console.log("Student res : ", res)
     if (!res.ok) throw new Error("Unauthorized");
     return res.json();
   })
   .then(data => {
+
+  console.log("Student Data : ", data)
     const table = document.getElementById("studentsTable");
     table.innerHTML = "";
-
-//    data.forEach(s => {
-//      const row = document.createElement("tr");
-//
-//      row.innerHTML = `
-//        <td>${s.seatNumber}</td>
-//        <td>${s.name}</td>
-//        <td>${s.phone}</td>
-//        <td>${formatDate(s.startDate)}</td>
-//        <td>${formatDate(s.endDate)}</td>
-//        <td>₹${s.amount}</td>
-//        <td>
-//          <button onclick="${s.id}">Vacate</button>
-//        </td>
-//      `;
-//      row.onclick = () => vacate(s.id);
-//
-//      table.appendChild(row);
-//    });
 
     data.forEach(s => {
       const row = document.createElement("tr");
@@ -36,7 +33,7 @@ fetch("/api/student")
           <td>${formatDate(s.endDate)}</td>
           <td>₹${s.amount}</td>
           <td>
-            <button onclick="vacate(${s.id}); event.stopPropagation()">Vacate</button>
+            <button onclick="vacate(${s.seatNumber}); event.stopPropagation()">Vacate</button>
           </td>
         `;
       // 🔥 THIS IS IMPORTANT
@@ -53,13 +50,28 @@ fetch("/api/student")
     window.location.href = "/dashboard.html";
   });
 
-function vacate(id) {
-  if (!confirm("Vacate this student?")) return;
 
-   console.log("Vacate response status:", id);
-  fetch(`/api/student/${id}/vacate`, { method: "POST" })
-    .then(() => location.reload());
+
+
+/*********************************
+ // Vacate Button (Reuse Existing API)
+ *********************************/
+
+function vacate(seatNumber) {
+
+const CURRENT_LIBRARY_ID =
+   localStorage.getItem("LIBRARY_ID")
+     ? Number(localStorage.getItem("LIBRARY_ID"))
+     : null;
+
+   if (!CURRENT_LIBRARY_ID) {
+     alert("Library not loaded. Please refresh.");
+     return;
+   }
+    fetch(`/api/vacate/libraryId/${CURRENT_LIBRARY_ID}/seatId/${seatNumber}`, { method: "POST" })
+        .then(() => location.reload());
 }
+
 
 function formatDate(date) {
   return new Date(date).toLocaleDateString();

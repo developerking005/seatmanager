@@ -21,10 +21,11 @@ public class VacateController {
     @Autowired
     private StudentRepository studentRepo;
 
-    @PostMapping("/{seatNumber}")
-    public ResponseEntity<String> vacateSeat(@PathVariable int seatNumber) {
+    @PostMapping("/libraryId/{libraryId}/seatId/{seatNumber}")
+    public ResponseEntity<String> vacateSeat(@PathVariable long libraryId, @PathVariable int seatNumber) {
 
-        Seat seat = seatRepo.findBySeatNumber(seatNumber)
+        Seat seat = seatRepo
+                .findByLibraryIdAndSeatNumber(libraryId, seatNumber)
                 .orElseThrow(() -> new RuntimeException("Seat not found"));
 
 

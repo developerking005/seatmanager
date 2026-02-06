@@ -3,12 +3,21 @@ package com.library.seatmanager.dto;
 import com.library.seatmanager.entity.Student;
 
 public class BookingRequest {
-        private int seatNumber;
-        private String name;
-        private String phone;
-        private int amountPaid;
-        private Student.StudentType studentType;
+    private Long libraryId;
+    private int seatNumber;
+    private String name;
+    private String phone;
+    private int amountPaid;
+    private Student.StudentType studentType;
 
+
+    public Long getLibraryId() {
+        return libraryId;
+    }
+
+    public void setLibraryId(Long libraryId) {
+        this.libraryId = libraryId;
+    }
 
     public Student.StudentType getStudentType() {
         return studentType;
@@ -50,19 +59,21 @@ public class BookingRequest {
         this.amountPaid = amountPaid;
     }
 
-    public BookingRequest(int seatNumber, Student.StudentType studentType, int amountPaid, String phone, String name) {
-        this.seatNumber = seatNumber;
+
+    public BookingRequest(Long libraryId, Student.StudentType studentType, int amountPaid, String phone, String name, int seatNumber) {
+        this.libraryId = libraryId;
         this.studentType = studentType;
         this.amountPaid = amountPaid;
         this.phone = phone;
         this.name = name;
+        this.seatNumber = seatNumber;
     }
-
 
     @Override
     public String toString() {
         return "BookingRequest{" +
-                "seatNumber=" + seatNumber +
+                "libraryId=" + libraryId +
+                ", seatNumber=" + seatNumber +
                 ", name='" + name + '\'' +
                 ", phone='" + phone + '\'' +
                 ", amountPaid=" + amountPaid +

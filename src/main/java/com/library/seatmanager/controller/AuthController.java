@@ -2,6 +2,7 @@ package com.library.seatmanager.controller;
 
 import com.library.seatmanager.dto.LoginRequest;
 import com.library.seatmanager.dto.OtpRequest;
+import com.library.seatmanager.dto.SignupRequest;
 import com.library.seatmanager.entity.Admin;
 import com.library.seatmanager.repository.AdminRepository;
 import jakarta.servlet.http.HttpServletRequest;
@@ -35,9 +36,46 @@ public class AuthController {
     @Autowired
     private PasswordEncoder encoder;
 
+
+    @PostMapping("/signup")
+    public ResponseEntity<String> signup(
+            @RequestBody SignupRequest req,
+            HttpServletRequest request) {
+
+        if (adminRepo.findByPhone(req.getPhone()).isPresent()) {
+            return ResponseEntity.badRequest().body("Phone already registered");
+        }
+
+        Admin admin = new Admin();
+        admin.setName(req.getName());
+        admin.setPhone(req.getPhone());
+        admin.setPassword(encoder.encode(req.getPassword()));
+        adminRepo.save(admin);
+
+        // 🔥 AUTO LOGIN AFTER SIGNUP
+        UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(
+                        admin.getPhone(),
+                        null,
+                        List.of(new SimpleGrantedAuthority("ROLE_ADMIN"))
+                );
+
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        context.setAuthentication(authentication);
+
+        HttpSession session = request.getSession(true);
+        session.setAttribute(
+                HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+                context
+        );
+
+        return ResponseEntity.ok("Signup successful");
+    }
+
+
     @PostMapping("/login")
     public ResponseEntity<String> login(@RequestBody LoginRequest req,
-                                        HttpSession session) {
+                                        HttpServletRequest request) {
 
         Admin admin = adminRepo.findByPhone(req.getPhone())
                 .orElseThrow(() -> new RuntimeException("Admin not found"));
@@ -46,18 +84,23 @@ public class AuthController {
             return ResponseEntity.status(401).body("Invalid credentials");
         }
 
-        // Generate OTP (mock)
-        String otp = String.valueOf(100000 + new Random().nextInt(900000));
-        admin.setOtp(otp);
-        admin.setOtpExpiry(LocalDateTime.now().plusMinutes(5));
-        adminRepo.save(admin);
+        UsernamePasswordAuthenticationToken authentication =
+                new UsernamePasswordAuthenticationToken(
+                        admin.getPhone(),
+                        null,
+                        List.of(new SimpleGrantedAuthority("ROLE_ADMIN"))
+                );
 
-        // For now, log OTP (later SMS)
-        System.out.println("OTP: " + otp);
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
+        context.setAuthentication(authentication);
 
-        session.setAttribute("PHONE", admin.getPhone());
+        HttpSession session = request.getSession(true);
+        session.setAttribute(
+                HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
+                context
+        );
 
-        return ResponseEntity.ok("OTP sent");
+        return ResponseEntity.ok("Login success");
     }
 
     @PostMapping("/verify-otp")

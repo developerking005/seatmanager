@@ -1,8 +1,10 @@
 package com.library.seatmanager.controller;
 
 import com.library.seatmanager.dto.BookingRequest;
+import com.library.seatmanager.entity.Library;
 import com.library.seatmanager.entity.Seat;
 import com.library.seatmanager.entity.Student;
+import com.library.seatmanager.repository.LibraryRepository;
 import com.library.seatmanager.repository.SeatRepository;
 import com.library.seatmanager.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,14 +27,27 @@ public class BookingController {
     @Autowired
     private StudentRepository studentRepo;
 
-    @PostMapping
+    @Autowired
+    private LibraryRepository libraryRepo;
+
+    @PostMapping()
     public ResponseEntity<String> bookSeat(@RequestBody BookingRequest req) {
 
-        Seat seat = seatRepo.findBySeatNumber(req.getSeatNumber())
-                .orElseThrow(() -> new RuntimeException("Seat not found"));
+        // finding library
+        Library library = libraryRepo.findById(req.getLibraryId())
+                .orElseThrow(() -> new RuntimeException("Library not found"));
 
+        // 1️⃣ Find seat by library + seat number
+        Seat seat = seatRepo
+                .findByLibraryIdAndSeatNumber(req.getLibraryId(), req.getSeatNumber())
+                .orElseThrow(() -> new RuntimeException("Seat not found for this library"));
+
+        // 2️⃣ Check if seat already occupied (ACTIVE student)
         Optional<Student> activeStudent =
-                studentRepo.findBySeat_SeatNumberAndActiveTrue(req.getSeatNumber());
+                studentRepo.findBySeat_Library_IdAndSeat_SeatNumberAndActiveTrue(
+                        req.getLibraryId(),
+                        req.getSeatNumber()
+                );
 
         if (activeStudent.isPresent()) {
             return ResponseEntity
@@ -40,9 +55,7 @@ public class BookingController {
                     .body("Seat already occupied");
         }
 
-        seat.setOccupied(true);
-        seatRepo.save(seat);
-
+        // 3️⃣ Create student
         Student student = new Student();
         student.setName(req.getName());
         student.setPhone(req.getPhone());
@@ -50,14 +63,16 @@ public class BookingController {
         student.setSeatNumber(seat.getSeatNumber());
         student.setAmountPaid(req.getAmountPaid());
         student.setBookingDate(LocalDate.now());
-        student.setStudentType(req.getStudentType());
         student.setExpiryDate(LocalDate.now().plusDays(30));
         student.setEndDate(LocalDateTime.now().plusDays(30));
+        student.setStudentType(req.getStudentType());
+        student.setLibrary(library);
         student.setActive(true);
 
         studentRepo.save(student);
 
         return ResponseEntity.ok("Seat booked successfully");
     }
+
 }
 

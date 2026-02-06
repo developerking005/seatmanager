@@ -19,43 +19,4 @@ public class SeatmanagerApplication {
 		SpringApplication.run(SeatmanagerApplication.class, args);
 	}
 
-	// 🔽 PLACE THIS HERE
-	@Bean
-	CommandLineRunner initSeats(SeatRepository repo) {
-		return args -> {
-			if (repo.count() == 0) {
-				for (int i = 1; i <= 65; i++) {
-					Seat seat = new Seat();
-					seat.setSeatNumber(i);
-					seat.setOccupied(false);
-					repo.save(seat);
-				}
-			}
-		};
-	}
-
-	@Bean
-	CommandLineRunner initAdmin(AdminRepository adminRepo,
-								LibraryRepository libraryRepo,
-								PasswordEncoder encoder) {
-
-		return args -> {
-
-			if (adminRepo.count() == 0) {
-				Admin admin = new Admin();
-				admin.setName("Library admin");
-				admin.setPhone("9999999999");
-				admin.setPassword(encoder.encode("admin@123"));
-				adminRepo.save(admin);
-			}
-
-			if (libraryRepo.count() == 0) {
-				Library lib = new Library();
-				lib.setLibraryName("Success Library");
-				lib.setTotalSeats(65);
-				libraryRepo.save(lib);
-			}
-		};
-	}
-
 }

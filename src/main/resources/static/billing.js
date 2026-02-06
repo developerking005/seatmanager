@@ -1,18 +1,28 @@
+const CURRENT_LIBRARY_ID = Number(localStorage.getItem("LIBRARY_ID"));
+
+const today = new Date();
+const year = today.getFullYear();
+const month = today.getMonth() + 1;
+
 document.addEventListener("DOMContentLoaded", () => {
   loadBillingSummary();
   loadExpenses();
 });
 
 function loadBillingSummary() {
-    fetch("/api/billing/summary")
+    fetch(
+        `/api/billing/summary/${CURRENT_LIBRARY_ID}?year=${year}&month=${month}`
+      )
       .then(res => res.json())
       .then(d => {
+
+      console.log("Data of Expense : ", d)
         document.getElementById("revenueCard").innerHTML = `
           <div class="card-top">
             <span>Total Revenue</span>
             <i class="fa-solid fa-money-bill-wave card-icon revenue"></i>
           </div>
-          <h2>₹${d.totalRevenue}</h2>
+          <h2>₹${d.monthlyRevenue}</h2>
         `;
 
         document.getElementById("expenseCard").innerHTML = `
@@ -20,7 +30,7 @@ function loadBillingSummary() {
             <span>Total Expenses</span>
             <i class="fa-solid fa-receipt card-icon expense"></i>
           </div>
-          <h2>₹${d.totalExpenses}</h2>
+          <h2>₹${d.monthlyExpenses}</h2>
         `;
 
         document.getElementById("profitCard").innerHTML = `
@@ -28,22 +38,27 @@ function loadBillingSummary() {
             <span>Net Profit</span>
             <i class="fa-solid fa-chart-line card-icon profit"></i>
           </div>
-          <h2>₹${d.netProfit}</h2>
+          <h2>₹${d.monthlyProfit}</h2>
         `;
 
         document.getElementById("projectedCard").innerHTML = `
           <div class="card-top">
-            <span>Projected Income</span>
+            <span>Avg Profit</span>
             <i class="fa-solid fa-chart-pie card-icon projected"></i>
           </div>
-          <h2>₹${d.projectedIncome}</h2>
+          <h2>₹${d.averageMonthlyProfit}</h2>
         `;
       });
 }
 function loadExpenses() {
-  fetch("/api/billing/expenses")
+  fetch(
+          `/api/billing/expenses/library/${CURRENT_LIBRARY_ID}`
+        )
     .then(res => res.json())
     .then(data => {
+
+      console.log("Data of Expense : ", data);
+
       const body = document.getElementById("expenseBody");
       const empty = document.getElementById("expenseEmpty");
 
@@ -59,6 +74,11 @@ function loadExpenses() {
       data.forEach(e => {
         const tr = document.createElement("tr");
 
+        console.log("Data of category : ", e.category);
+        console.log("Data of status : ", e.status);
+        console.log("Data of amount : ", e.amount);
+        console.log("Data of expenseDate : ", e.expenseDate);
+
         tr.innerHTML = `
           <td class="category-cell">
             <span class="cat-icon ${getCategoryClass(e.category)}">
@@ -72,7 +92,7 @@ function loadExpenses() {
           <td class="amount">₹${e.amount}</td>
 
           <td>
-            <span class="status-badge ${e.status.toLowerCase()}">
+            <span class="status-badge ${e.status}">
               ${e.status}
             </span>
           </td>
@@ -118,7 +138,7 @@ function saveExpense() {
     status: exStatus.value
   };
 
-  fetch("/api/expenses", {
+  fetch(`/api/expenses/library/${CURRENT_LIBRARY_ID}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload)
@@ -153,13 +173,13 @@ function getCategoryClass(category) {
 function deleteExpense(id) {
   if (!confirm("Delete this expense?")) return;
 
-  fetch(`/api/billing/expenses/${id}`, { method: "DELETE" })
+  fetch(`/api/billing/expenses/${id}/library/${CURRENT_LIBRARY_ID}`, { method: "DELETE" })
     .then(() => loadExpenses());
 }
 
 
 function editExpense(id) {
-  fetch(`/api/billing/expenses`)
+  fetch(`/api/billing/expenses/library/${id}`)
     .then(res => res.json())
     .then(list => {
       const e = list.find(x => x.id === id);
@@ -193,7 +213,7 @@ function updateExpense() {
     status: editStatus.value
   };
 
-  fetch(`/api/billing/expenses/${id}`, {
+  fetch(`/api/billing/expenses/${id}/library/${CURRENT_LIBRARY_ID}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload)

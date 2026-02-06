@@ -41,6 +41,11 @@ public class Student {
     @Enumerated(EnumType.STRING)
     private HalfDaySlot halfDaySlot;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "library_id", nullable = false)
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    private Library library;
+
     public Long getId() {
         return id;
     }
@@ -153,6 +158,15 @@ public class Student {
         this.halfDaySlot = halfDaySlot;
     }
 
+    public Library getLibrary() {
+        return library;
+    }
+
+    public void setLibrary(Library library) {
+        this.library = library;
+    }
+
+
     @Override
     public String toString() {
         return "Student{" +
@@ -170,14 +184,15 @@ public class Student {
                 ", active=" + active +
                 ", studentType=" + studentType +
                 ", halfDaySlot=" + halfDaySlot +
+                ", library=" + library +
                 '}';
     }
-
 
     public Student() {
     }
 
-    public Student(Long id, String name, String phone, Integer seatNumber, int amount, LocalDate bookingDate, LocalDate expiryDate, LocalDateTime startDate, LocalDateTime endDate, int amountPaid, Seat seat, boolean active, StudentType studentType, HalfDaySlot halfDaySlot) {
+
+    public Student(Long id, String name, String phone, Integer seatNumber, int amount, LocalDate bookingDate, LocalDate expiryDate, LocalDateTime startDate, LocalDateTime endDate, int amountPaid, Seat seat, boolean active, StudentType studentType, HalfDaySlot halfDaySlot, Library library) {
         this.id = id;
         this.name = name;
         this.phone = phone;
@@ -192,6 +207,7 @@ public class Student {
         this.active = active;
         this.studentType = studentType;
         this.halfDaySlot = halfDaySlot;
+        this.library = library;
     }
 
     public enum StudentType {

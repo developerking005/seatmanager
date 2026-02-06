@@ -6,10 +6,7 @@ import com.library.seatmanager.repository.SeatRepository;
 import com.library.seatmanager.repository.StudentRepository;
 import com.library.seatmanager.service.DashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
 
@@ -27,17 +24,28 @@ public class DashboardController {
     @Autowired
     private StudentRepository studentRepo;
 
-    @GetMapping("/dashboards")
-    public DashboardResponse getDashboard() {
+    @GetMapping("/dashboards/{libraryId}")
+    public DashboardResponse getDashboard(
+            @PathVariable Long libraryId) {
 
-        int totalSeats = (int) seatRepo.count();
-//        int filledSeats = (int) seatRepo.countByOccupiedTrue();
+        // total seats of this library
+        int totalSeats =
+                seatRepo.countByLibraryId(libraryId);
+
+        // full day active students of this library
         long filledSeats =
-                studentRepo.countByStudentTypeAndActiveTrue(Student.StudentType.FULL_DAY);
-        long vacantSeats = totalSeats - filledSeats;
+                studentRepo.countBySeat_Library_IdAndStudentTypeAndActiveTrue(
+                        libraryId,
+                        Student.StudentType.FULL_DAY
+                );
 
         long halfDayCount =
-                studentRepo.countByStudentTypeAndActiveTrue(Student.StudentType.HALF_DAY);
+                studentRepo.countByLibrary_IdAndStudentTypeAndActiveTrue(
+                        libraryId,
+                        Student.StudentType.HALF_DAY
+                );
+
+        long vacantSeats = totalSeats - filledSeats;
 
         return new DashboardResponse(
                 totalSeats,
@@ -45,11 +53,6 @@ public class DashboardController {
                 vacantSeats,
                 halfDayCount
         );
-    }
-
-    @GetMapping("/dashboard")
-    public Map<String, Object> dashboard() {
-        return service.getDashboardStats();
     }
 
 

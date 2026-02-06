@@ -1,276 +1,205 @@
+/*********************************
+ * GLOBAL STATE
+ *********************************/
 let allAlerts = [];
 let showAllAlerts = false;
+let currentLibraryId = null;
 
-//fetch("http://localhost:8080/api/dashboard")
-//  .then(res => res.json())
-//  .then(data => {
-//    document.getElementById("totalSeats").innerText = data.totalSeats;
-//    document.getElementById("filledSeats").innerText = data.filledSeats;
-//    document.getElementById("vacantSeats").innerText = data.vacantSeats;
-//    document.getElementById("totalCollection").innerText = "₹" + data.totalCollection;
-//  });
+let CURRENT_LIBRARY_ID =
+  localStorage.getItem("LIBRARY_ID")
+    ? Number(localStorage.getItem("LIBRARY_ID"))
+    : null;
 
-fetch("http://localhost:8080/api/dashboards")
+console.log("✅ dashboard.js loaded");
+
+
+
+/*********************************
+ * WINDOW LOAD (ONLY ONE)
+ *********************************/
+
+ const IS_DASHBOARD_PAGE =
+   window.location.pathname.includes("dashboard.html");
+
+window.onload = function () {
+    if (!IS_DASHBOARD_PAGE) return;
+  console.log("🚀 window.onload triggered");
+
+  // Hide modals safely
+  hideModal("bookingModal");
+  hideModal("studentModal");
+
+  // Check library
+  checkLibraryAndLoad();
+  loadingDashboardCards();
+  loadExpiryNotifications();
+};
+
+
+/*********************************
+ * LIBRARY + SEAT FLOW
+ *********************************/
+function checkLibraryAndLoad() {
+  fetch("/api/libraries/exists")
+      .then(res => {
+        console.log("📡 /api/libraries/exists status:", res.status);
+        if (!res.ok) throw new Error("Library exists API failed");
+        return res.json();
+      })
+      .then(data => {
+        console.log("📚 Library exists response:", data);
+
+        if (!data.exists) {
+          console.warn("➡️ No library found, redirecting...");
+          window.location.href = "/create-library.html";
+          return;
+        }
+
+        // ✅ STORE LIBRARY ID GLOBALLY
+            localStorage.setItem("LIBRARY_ID", data.libraryId);
+            localStorage.setItem("LIBRARY_NAME", data.libraryName);
+
+        const libraryId = data.libraryId;
+        console.log("🏛 Library ID:", libraryId);
+
+        loadSeats(libraryId);
+      })
+      .catch(err => {
+        console.error("❌ Library exists check failed", err);
+      });
+  }
+
+function loadSeats(libraryId) {
+  console.log("🪑 Fetching seats for library:", libraryId);
+
+  fetch(`/api/seats/library/${libraryId}`)
+    .then(res => {
+      console.log("📡 Seats API status:", res.status);
+      return res.json();
+    })
+    .then(seats => {
+      console.log("🪑 Seats received:", seats.length);
+      console.log(seats);
+      renderSeats(seats);
+    })
+    .catch(err => console.error("❌ Seat fetch failed", err));
+}
+
+
+/*********************************
+ * SEAT RENDERING
+ *********************************/
+function renderSeats(seats) {
+  console.log("🎨 Rendering seats...");
+  const container = document.getElementById("seatContainer");
+  if (!container) return;
+
+  container.innerHTML = "";
+  const seatsPerRow = 10;
+  let row = [];
+
+  seats.forEach((seat, index) => {
+    row.push(seat);
+
+    if (row.length === seatsPerRow || index === seats.length - 1) {
+      const isReverse = Math.floor(index / seatsPerRow) % 2 !== 0;
+      const finalRow = isReverse ? [...row].reverse() : row;
+
+      finalRow.forEach(s => {
+        const div = document.createElement("div");
+        div.className = "seat";
+        div.innerText = s.seatNumber;
+
+        if (s.occupied) {
+          div.classList.add("occupied");
+          div.onclick = () => openStudentModal(s.seatNumber);
+        } else {
+          div.classList.add("vacant");
+          div.onclick = () => bookSeat(s.seatNumber);
+        }
+
+        container.appendChild(div);
+      });
+
+      row = [];
+    }
+  });
+}
+
+
+/*********************************
+ * DASHBOARD COUNTS
+ *********************************/
+
+ function loadingDashboardCards() {
+
+  const CURRENT_LIBRARY_ID =
+    localStorage.getItem("LIBRARY_ID")
+      ? Number(localStorage.getItem("LIBRARY_ID"))
+      : null;
+
+    if (!CURRENT_LIBRARY_ID) {
+      alert("Library not loaded. Please refresh.");
+      return;
+    }
+fetch(`/api/dashboards/${CURRENT_LIBRARY_ID}`)
   .then(res => res.json())
   .then(data => {
-      document.getElementById("totalSeats").innerText = data.totalSeats;
-      document.getElementById("filledSeats").innerText = data.filledSeats;
-      document.getElementById("vacantSeats").innerText = data.vacantSeats;
-      document.getElementById("halfDayCount").innerText = data.halfDayStudents;
-  });
+    console.log("📊 Dashboard stats loaded", data);
+    console.log("📊 Dashboard stats loaded", data);
+    document.getElementById("totalSeats").innerText = data.totalSeats;
+    document.getElementById("filledSeats").innerText = data.filledSeats;
+    document.getElementById("vacantSeats").innerText = data.vacantSeats;
+    document.getElementById("halfDayCount").innerText = data.halfDayStudents;
+  })
+  .catch(err => console.error("❌ Dashboard stats failed", err));
 
-fetch("http://localhost:8080/api/seats")
-  .then(res => res.json())
-  .then(seats => renderSeats(seats));
+}
 
-function renderSeats(seats) {
-    const container = document.getElementById("seatContainer");
-    container.innerHTML = "";
 
-    const seatsPerRow = 10;
-    let row = [];
+/*********************************
+ Expire Notifications
+ *********************************/
 
-    seats.forEach((seat, index) => {
-        row.push(seat);
 
-        if (row.length === seatsPerRow || index === seats.length - 1) {
-            // Zig-zag: reverse alternate rows
-            const isReverse = Math.floor(index / seatsPerRow) % 2 !== 0;
-            const finalRow = isReverse ? [...row].reverse() : row;
+function loadExpiryNotifications() {
 
-            finalRow.forEach(s => {
-                const div = document.createElement("div");
-                div.classList.add("seat");
-                div.innerText = s.seatNumber;
-               if (s.occupied) {
-                   div.classList.add("occupied");
-                   div.onclick = () => openStudentModal(s.seatNumber);
-               } else {
-                   div.classList.add("vacant");
-                   div.onclick = () => bookSeat(s.seatNumber);
-               }
+console.log(" expiry notification triggered ");
 
-                container.appendChild(div);
-            });
+ const CURRENT_LIBRARY_ID =
+    localStorage.getItem("LIBRARY_ID")
+      ? Number(localStorage.getItem("LIBRARY_ID"))
+      : null;
 
-            row = [];
-        }
+    if (!CURRENT_LIBRARY_ID) {
+      alert("Library not loaded. Please refresh.");
+      return;
+    }
+
+    Promise.all([
+      fetch(`/api/student/expiring-soon/${CURRENT_LIBRARY_ID}`)
+        .then(r => r.json()),
+
+      fetch(`/api/student/expired/${CURRENT_LIBRARY_ID}`)
+        .then(r => r.json())
+    ])
+    .then(([expiring, expired]) => {
+
+      console.log("Expiring Data:", expiring);
+      console.log("Expired Data:", expired);
+
+      renderExpiryList([...expired, ...expiring]);
     });
 }
 
 
-let selectedSeat = null;
-
-function bookSeat(seatNumber) {
-    selectedSeat = seatNumber;
-    document.getElementById("seatNo").innerText = seatNumber;
-    document.getElementById("bookingModal").style.display = "block";
-}
-
-
-
-//Confirmbooking flow start here
-function confirmBooking() {
-
-    const payload = {
-        seatNumber: selectedSeat,
-        name: document.getElementById("name").value,
-        phone: document.getElementById("phone").value,
-        amountPaid: document.getElementById("amount").value,
-        studentType: "FULL_DAY"
-    };
-
-    fetch("http://localhost:8080/api/book", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-    })
-    .then(res => {
-        if (!res.ok) throw new Error("Booking failed");
-        return res.text();
-    })
-    .then(() => {
-        closeModal();
-        refreshUI();
-    })
-    .catch(err => alert(err.message));
-}
-
-
-function closeModal() {
-    document.getElementById("bookingModal").style.display = "none";
-}
-
-function refreshUI() {
-    location.reload();
-}
-
-
-
-
-//Vavocate flow start here
-
-let vacateSeatNumber = null;
-
-
-function openVacateModal(seatNumber) {
-    vacateSeatNumber = seatNumber;
-    document.getElementById("vacateSeatNo").innerText = seatNumber;
-    document.getElementById("studentInfo").innerText =
-        "Are you sure you want to vacate this seat?";
-    document.getElementById("vacateModal").style.display = "block";
-}
-
-
-function confirmVacate() {
-
-    fetch(`http://localhost:8080/api/vacate/${vacateSeatNumber}`, {
-        method: "POST"
-    })
-    .then(res => {
-        if (!res.ok) throw new Error("Vacate failed");
-        return res.text();
-    })
-    .then(() => {
-        closeVacateModal();
-        refreshUI();
-    })
-    .catch(err => alert(err.message));
-}
-
-function closeVacateModal() {
-    document.getElementById("vacateModal").style.display = "none";
-}
-
-
-
-//open student model
-
-let currentSeatNumber = null;
-let currentStudentId = null;
-
-function openStudentModal(seatNumber) {
-    currentSeatNumber = seatNumber;
-
-    fetch(`/api/student/seat/${seatNumber}`)
-        .then(res => {
-            if (!res.ok) throw new Error("Student not found");
-            return res.json();
-        })
-        .then(student => {
-            currentStudentId = student.id;
-
-            document.getElementById("detailSeatNo").innerText = seatNumber;
-            document.getElementById("detailName").value = student.name;
-            document.getElementById("detailPhone").value = student.phone;
-            document.getElementById("detailJoinDate").value = student.bookingDate;
-            document.getElementById("detailExpireDate").value = student.expiryDate;
-            document.getElementById("detailAmount").value = student.amountPaid;
-
-                 // 🔥 NEW
-                  loadAvailableSeats(seatNumber);
-
-            document.getElementById("studentModal").style.display = "block";
-        })
-        .catch(err => alert(err.message));
-}
-
-function closeStudentModal() {
-    document.getElementById("studentModal").style.display = "none";
-}
-
-
-// Vacate Button (Reuse Existing API)
-function vacateSeat() {
-    fetch(`/api/vacate/${currentSeatNumber}`, { method: "POST" })
-        .then(() => {
-            closeStudentModal();
-            refreshUI();
-        });
-}
-
-
-//update button
-function updateStudent() {
-
-    const payload = {
-        name: document.getElementById("detailName").value,
-        phone: document.getElementById("detailPhone").value,
-        amountPaid: document.getElementById("detailAmount").value,
-        expireDate: document.getElementById("detailExpireDate").value,
-         seatNumber: parseInt(document.getElementById("detailSeatNumber").value)
-    };
-
-    fetch(`/api/student/${currentStudentId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload)
-    })
-    .then(res => {
-        if (!res.ok) throw new Error("Update failed");
-        return res.text();
-    })
-    .then(() => {
-        alert("Updated successfully");
-        closeStudentModal();
-        refreshUI();
-    })
-    .catch(err => alert(err.message));
-}
-
-
-
-
-//when dashboard page load
-loadExpiryNotifications();
-
-function loadExpiryNotifications() {
-//  fetch("/api/student/expiring-soon")
-//    .then(res => res.json())
-//    .then(renderExpiryList);
-    Promise.all([
-        fetch("/api/student/expiring-soon").then(r => r.json()),
-        fetch("/api/student/expired").then(r => r.json())
-      ]).then(([expiring, expired]) => {
-        renderExpiryList([...expired, ...expiring]);
-      });
-}
-
-
-//function renderExpiryList(data) {
-//  const box = document.getElementById("expiryBody");
-//  box.innerHTML = "";
-//    data.forEach(s => {
-////      const statusClass = getExpiryClass(s.expiryDate);
-//        const tr = document.createElement("tr");
-//      // 🔥 decide row color
-//        const rowClass = getExpiryClass(s.expireDate);
-//        if (rowClass) {
-//          tr.classList.add(rowClass);
-//        }
-//     tr.innerHTML = `
-//         <td>${s.seatNumber}</td>
-//         <td>${s.name}</td>
-//         <td>${s.phone}</td>
-//         <td>${s.expireDate ? s.expireDate : "-"}</td>
-//         <td>₹${s.amountPaid}</td>
-//         <td>
-//           <button onclick="editStudent(${s.id}">Edit</button>
-//           <button onclick="sendReminder('${s.phone}', '${s.name}', ${s.seatNumber}, '${s.expireDate}')">Send</button>
-//         </td>
-//    `;
-//    box.appendChild(tr);
-//  });
-//}
-
-
-
-////new JS for Expire subscription
 function renderExpiryList(data) {
   allAlerts = data;
 
   const box = document.getElementById("expiryBody");
   box.innerHTML = "";
+
+   console.log(" Data ", data);
 
   const alertsToShow = showAllAlerts ? allAlerts : allAlerts.slice(0, 3);
 
@@ -317,44 +246,6 @@ function renderExpiryList(data) {
 
 
 
-
-
-function toggleViewAll() {
-  showAllAlerts = !showAllAlerts;
-  renderExpiryList(allAlerts);
-}
-
-function updateViewAllText() {
-  const btn = document.querySelector(".view-all");
-  btn.innerText = showAllAlerts ? "Show Less" : "View All Alerts";
-}
-
-
-
-function sendReminder(phone, name, seat, expiry) {
-  const msg = `
-Hello ${name} 👋
-
-Your library seat (Seat No: ${seat})
-is expiring on ${expiry}.
-
-Please renew to continue your seat.
-Thank you 🙏
-`;
-
-  window.open(
-    `https://wa.me/91${phone}?text=${encodeURIComponent(msg)}`,
-    "_blank"
-  );
-}
-
-
-//date calculation logic / check weather we need it or not
-function daysBetween(today, expiry) {
-  const oneDay = 24 * 60 * 60 * 1000;
-  return Math.floor((expiry - today) / oneDay);
-}
-
 function getExpiryClass(expiryDateStr) {
  if (!expiryDateStr) return null;
 
@@ -383,8 +274,188 @@ function getExpiryClass(expiryDateStr) {
 }
 
 
+function updateViewAllText() {
+  const btn = document.querySelector(".view-all");
+  btn.innerText = showAllAlerts ? "Show Less" : "View All Alerts";
+}
+
+/*********************************
+  * BOOK SEAT
+  *********************************/
+ let selectedSeat = null;
+
+ function bookSeat(seatNumber) {
+   selectedSeat = seatNumber;
+   document.getElementById("seatNo").innerText = seatNumber;
+   showModal("bookingModal");
+ }
+
+ function confirmBooking() {
+
+ const CURRENT_LIBRARY_ID =
+   localStorage.getItem("LIBRARY_ID")
+     ? Number(localStorage.getItem("LIBRARY_ID"))
+     : null;
+
+   if (!CURRENT_LIBRARY_ID) {
+     alert("Library not loaded. Please refresh.");
+     return;
+   }
+
+   const payload = {
+     libraryId: CURRENT_LIBRARY_ID,   // 🔥 REQUIRED
+     seatNumber: selectedSeat,
+     name: value("name"),
+     phone: value("phone"),
+     amountPaid: value("amount"),
+     studentType: "FULL_DAY"
+   };
+
+   console.log("📦 Booking payload:", payload);
+
+   fetch("/api/book", {
+     method: "POST",
+     headers: { "Content-Type": "application/json" },
+     body: JSON.stringify(payload)
+   })
+     .then(res => {
+       if (!res.ok) throw new Error("Booking failed");
+       return res.text();
+     })
+     .then(msg => {
+       console.log("✅ Booking success:", msg);
+       location.reload();
+     })
+     .catch(err => alert(err.message));
+ }
+
+/*********************************
+ * STUDENT MODAL
+ *********************************/
+let currentSeatNumber = null;
+let currentStudentId = null;
+
+
+function openStudentModal(seatNumber) {
+
+const CURRENT_LIBRARY_ID =
+   localStorage.getItem("LIBRARY_ID")
+     ? Number(localStorage.getItem("LIBRARY_ID"))
+     : null;
+
+   if (!CURRENT_LIBRARY_ID) {
+     alert("Library not loaded. Please refresh.");
+     return;
+   }
+
+  currentSeatNumber = seatNumber;
+
+  fetch(`/api/student/seat/${seatNumber}/library/${CURRENT_LIBRARY_ID}`)
+      .then(res => {
+        if (res.status === 404) {
+          alert("This seat is vacant.");
+          return null;
+        }
+        return res.json();
+      })
+      .then(student => {
+        if (!student) return;
+         currentStudentId = student.id;
+
+        fillStudentModal(student);
+        loadAvailableSeats(currentSeatNumber);
+        showModal("studentModal");
+      })
+      .catch(err => console.error(err));
+}
+
+function fillStudentModal(student) {
+  setText("detailSeatNo", currentSeatNumber);
+  setValue("detailName", student.name);
+  setValue("detailPhone", student.phone);
+  setValue("detailJoinDate", student.bookingDate);
+  setValue("detailExpireDate", student.expiryDate);
+  setValue("detailAmount", student.amountPaid);
+}
+
+
+/*********************************
+ // Vacate Button (Reuse Existing API)
+ *********************************/
+
+function vacateSeat() {
+
+const CURRENT_LIBRARY_ID =
+   localStorage.getItem("LIBRARY_ID")
+     ? Number(localStorage.getItem("LIBRARY_ID"))
+     : null;
+
+   if (!CURRENT_LIBRARY_ID) {
+     alert("Library not loaded. Please refresh.");
+     return;
+   }
+    fetch(`/api/vacate/libraryId/${CURRENT_LIBRARY_ID}/seatId/${currentSeatNumber}`, { method: "POST" })
+        .then(() => {
+            closeStudentModal();
+            refreshUI();
+        });
+}
+
+/*********************************
+ // Update Button
+ *********************************/
+function updateStudent() {
+
+const CURRENT_LIBRARY_ID =
+   localStorage.getItem("LIBRARY_ID")
+     ? Number(localStorage.getItem("LIBRARY_ID"))
+     : null;
+
+   if (!CURRENT_LIBRARY_ID) {
+     alert("Library not loaded. Please refresh.");
+     return;
+   }
+    const payload = {
+        name: document.getElementById("detailName").value,
+        phone: document.getElementById("detailPhone").value,
+        amountPaid: document.getElementById("detailAmount").value,
+        expireDate: document.getElementById("detailExpireDate").value,
+         seatNumber: parseInt(document.getElementById("detailSeatNumber").value)
+    };
+
+    fetch(`/api/student/${currentSeatNumber}/library/${CURRENT_LIBRARY_ID}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+    })
+    .then(res => {
+        if (!res.ok) throw new Error("Update failed");
+        return res.text();
+    })
+    .then(() => {
+        alert("Updated successfully");
+        closeStudentModal();
+        refreshUI();
+    })
+    .catch(err => alert(err.message));
+}
+
+
+
 function loadAvailableSeats(currentSeat) {
-  fetch("/api/seats")
+
+const CURRENT_LIBRARY_ID =
+   localStorage.getItem("LIBRARY_ID")
+     ? Number(localStorage.getItem("LIBRARY_ID"))
+     : null;
+
+   if (!CURRENT_LIBRARY_ID) {
+     alert("Library not loaded. Please refresh.");
+     return;
+   }
+
+
+  fetch(`/api/seats/library/${CURRENT_LIBRARY_ID}`)
     .then(res => res.json())
     .then(seats => {
       const select = document.getElementById("detailSeatNumber");
@@ -407,17 +478,51 @@ function loadAvailableSeats(currentSeat) {
 
 
 
-//forcing to close the student object again and again
-window.onload = () => {
-    document.getElementById("bookingModal").style.display = "none";
+
+
+
+
+/*********************************
+ * HELPERS
+ *********************************/
+function hideModal(id) {
+  const el = document.getElementById(id);
+  if (el) el.style.display = "none";
+}
+
+function refreshUI() {
+    location.reload();
+}
+
+function showModal(id) {
+  const el = document.getElementById(id);
+  if (el) el.style.display = "block";
+}
+
+function value(id) {
+  return document.getElementById(id)?.value || "";
+}
+
+function setValue(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.value = val || "";
+}
+
+function setText(id, val) {
+  const el = document.getElementById(id);
+  if (el) el.innerText = val || "";
+}
+
+function closeStudentModal() {
     document.getElementById("studentModal").style.display = "none";
-};
+}
+
+function toggleViewAll() {
+  showAllAlerts = !showAllAlerts;
+  renderExpiryList(allAlerts);
+}
 
 
-
-
-
-//new card click functions
 function scrollToSeats() {
   document.querySelector(".seat-card")
     .scrollIntoView({ behavior: "smooth" });
@@ -432,7 +537,9 @@ function openHalfDayForm() {
 }
 
 
-// ------------------------------------Now this is for Mobile JS -----------------------
+/*********************************
+ * MOBILE NAV
+ *********************************/
 function goTo(path) {
   window.location.href = path;
 }

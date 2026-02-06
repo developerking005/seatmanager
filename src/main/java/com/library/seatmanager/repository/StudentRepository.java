@@ -4,6 +4,7 @@ import com.library.seatmanager.entity.Student;
 import jakarta.persistence.Id;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -18,8 +19,24 @@ public interface StudentRepository extends JpaRepository<Student , Long> {
     Optional<Student> findBySeatNumberAndActiveTrue(int seatNumber);
 
 
+    // ✅ Active students of a library
+    List<Student> findBySeat_Library_IdAndActiveTrue(Long libraryId);
+
     @Query("SELECT COALESCE(SUM(s.amountPaid), 0) FROM Student s WHERE s.active = true")
     Integer sumTotalCollection();
+
+    @Query("""
+            SELECT COALESCE(SUM(s.amountPaid), 0)
+            FROM Student s
+            WHERE s.library.id = :libraryId
+              AND YEAR(s.bookingDate) = :year
+              AND MONTH(s.bookingDate) = :month
+            """)
+    int sumMonthlyRevenue(
+            @Param("libraryId") Long libraryId,
+            @Param("year") int year,
+            @Param("month") int month
+    );
 
     long countByActiveTrue();
     List<Student> findByActiveTrue();
@@ -55,6 +72,42 @@ public interface StudentRepository extends JpaRepository<Student , Long> {
     List<Student> findByStudentTypeAndActiveTrue(Student.StudentType studentType);
 
     List<Student> findByActiveTrueAndStudentType(Student.StudentType studentType);
+
+    Optional<Student> findBySeat_Library_IdAndSeat_SeatNumberAndActiveTrue(
+            Long libraryId,
+            int seatNumber
+    );
+
+    long countBySeat_Library_IdAndStudentTypeAndActiveTrue(
+            Long libraryId,
+            Student.StudentType type
+    );
+
+
+    List<Student>
+    findBySeat_Library_IdAndActiveTrueAndExpiryDateBetween(
+            Long libraryId,
+            LocalDate start,
+            LocalDate end
+    );
+
+    List<Student>
+    findBySeat_Library_IdAndActiveTrueAndExpiryDateBefore(
+            Long libraryId,
+            LocalDate date
+    );
+
+
+    List<Student> findByLibrary_IdAndStudentTypeAndActiveTrue(
+            Long libraryId,
+            Student.StudentType studentType
+    );
+
+
+    long countByLibrary_IdAndStudentTypeAndActiveTrue(
+            Long libraryId,
+            Student.StudentType studentType
+    );
 
 
 

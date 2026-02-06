@@ -1,4 +1,9 @@
-fetch("/api/student/halfday")
+let CURRENT_LIBRARY_ID =
+  localStorage.getItem("LIBRARY_ID")
+    ? Number(localStorage.getItem("LIBRARY_ID"))
+    : null;
+
+fetch(`/api/student/halfday/library/${CURRENT_LIBRARY_ID}`)
   .then(res => {
     if (!res.ok) return [];
     return res.json();
@@ -83,7 +88,7 @@ function createHalfDayStudent() {
     halfDaySlot: document.getElementById("hdSlot").value
   };
 
-  fetch("/api/student/create", {
+  fetch(`/api/student/create/library/${CURRENT_LIBRARY_ID}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(payload)

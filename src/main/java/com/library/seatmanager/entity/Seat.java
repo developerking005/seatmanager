@@ -1,9 +1,6 @@
 package com.library.seatmanager.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
@@ -18,11 +15,9 @@ public class Seat {
 
     private boolean occupied;
 
-    public Seat(Long id, int seatNumber, boolean occupied) {
-        this.id = id;
-        this.seatNumber = seatNumber;
-        this.occupied = occupied;
-    }
+    @ManyToOne
+    @JoinColumn(name = "library_id", nullable = false)
+    private Library library;
 
     public Seat() {
     }
@@ -51,15 +46,30 @@ public class Seat {
         this.occupied = occupied;
     }
 
+
+    public Library getLibrary() {
+        return library;
+    }
+
+    public void setLibrary(Library library) {
+        this.library = library;
+    }
+
+    public Seat(Long id, Library library, boolean occupied, int seatNumber) {
+        this.id = id;
+        this.library = library;
+        this.occupied = occupied;
+        this.seatNumber = seatNumber;
+    }
+
     @Override
     public String toString() {
         return "Seat{" +
                 "id=" + id +
                 ", seatNumber=" + seatNumber +
                 ", occupied=" + occupied +
+                ", library=" + library +
                 '}';
     }
-
-
 }
 

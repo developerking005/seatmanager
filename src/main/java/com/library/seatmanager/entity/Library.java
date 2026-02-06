@@ -14,6 +14,10 @@ public class Library {
     private String logoUrl;
     private int totalSeats;
 
+    @ManyToOne
+    @JoinColumn(name = "admin_id", nullable = false)
+    private Admin admin;
+
 
     public Long getId() {
         return id;
@@ -48,11 +52,20 @@ public class Library {
     }
 
 
-    public Library(Long id, int totalSeats, String logoUrl, String libraryName) {
+    public Admin getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Admin admin) {
+        this.admin = admin;
+    }
+
+    public Library(Long id, int totalSeats, String logoUrl, String libraryName, Admin admin) {
         this.id = id;
         this.totalSeats = totalSeats;
         this.logoUrl = logoUrl;
         this.libraryName = libraryName;
+        this.admin = admin;
     }
 
     public Library() {
@@ -65,6 +78,7 @@ public class Library {
                 ", libraryName='" + libraryName + '\'' +
                 ", logoUrl='" + logoUrl + '\'' +
                 ", totalSeats=" + totalSeats +
+                ", admin=" + admin +
                 '}';
     }
 }

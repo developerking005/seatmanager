@@ -40,6 +40,22 @@ public class SecurityConfig {
                                 // misc
                                 "/favicon.ico",
 
+                                "/index.html",
+                                "/index.css",
+
+                                "/new-index.html",
+                                "/new-index.css",
+                                "/new-index.js",
+
+                                "/signup.html",
+                                "/signup.js",
+
+                                "/login.html",
+                                "/login.js",
+
+                                "/create-library.html",
+                                "/create-library.js",
+
                                 // auth APIs
                                 "/api/auth/**"
                         ).permitAll()

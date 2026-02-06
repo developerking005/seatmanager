@@ -4,12 +4,15 @@ import com.library.seatmanager.dto.HalfDayStudentResponse;
 import com.library.seatmanager.dto.StudentCreateRequest;
 import com.library.seatmanager.dto.StudentTableResponse;
 import com.library.seatmanager.dto.StudentUpdateRequest;
+import com.library.seatmanager.entity.Library;
 import com.library.seatmanager.entity.Seat;
 import com.library.seatmanager.entity.Student;
+import com.library.seatmanager.repository.LibraryRepository;
 import com.library.seatmanager.repository.SeatRepository;
 import com.library.seatmanager.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -28,22 +31,48 @@ public class StudentController {
     @Autowired
     private SeatRepository seatRepo;
 
-    @GetMapping("/seat/{seatNumber}")
-    public ResponseEntity<Student> getStudentBySeat(@PathVariable int seatNumber) {
+    @Autowired
+    private LibraryRepository libraryRepo;
+
+
+    @GetMapping("/library/{libraryId}")
+    public List<StudentTableResponse> getStudentsByLibrary(
+            @PathVariable Long libraryId,
+            Authentication auth
+    ) {
+        return studentRepo
+                .findBySeat_Library_IdAndActiveTrue(libraryId)
+                .stream()
+                .map(StudentTableResponse::from)
+                .toList();
+    }
+
+    @GetMapping("/seat/{seatNumber}/library/{libraryId}")
+    public ResponseEntity<Student> getStudentBySeat(
+            @PathVariable Long libraryId,
+            @PathVariable int seatNumber) {
 
         return studentRepo
-                .findBySeat_SeatNumberAndActiveTrue(seatNumber)
+                .findBySeat_Library_IdAndSeat_SeatNumberAndActiveTrue(
+                        libraryId,
+                        seatNumber
+                )
                 .map(ResponseEntity::ok)
-                .orElseThrow(() -> new RuntimeException("Active student not found"));
+                .orElse(ResponseEntity.notFound().build());
     }
 
 
-    @PutMapping("/{id}")
+    @PutMapping("/{seatNumber}/library/{libraryId}")
     public ResponseEntity<String> updateStudent(
-            @PathVariable Long id,
+            @PathVariable Long libraryId,
+            @PathVariable int seatNumber,
             @RequestBody StudentUpdateRequest req) {
 
-        Student student = studentRepo.findById(id)
+        Student student = studentRepo
+                .findBySeat_Library_IdAndSeat_SeatNumberAndActiveTrue(
+                        libraryId,
+                        seatNumber
+                )
                 .orElseThrow(() -> new RuntimeException("Student not found"));
 
         if (req.getName() != null) {
@@ -53,10 +82,6 @@ public class StudentController {
         if (req.getPhone() != null) {
             student.setPhone(req.getPhone());
         }
-//
-//        if (req.getSeatNumber() != null) {
-//            student.setSeatNumber(req.getSeatNumber());
-//        }
 
         if (student.getSeatNumber() != req.getSeatNumber()) {
 
@@ -64,13 +89,13 @@ public class StudentController {
 
             try {
                 // 1️⃣ Free old seat
-                Seat oldSeat = seatRepo.findBySeatNumber(student.getSeatNumber())
+                Seat oldSeat = seatRepo.findByLibraryIdAndSeatNumber(libraryId, student.getSeatNumber())
                         .orElseThrow(() -> new RuntimeException("Old seat not found"));
                 oldSeat.setOccupied(false);
                 seatRepo.save(oldSeat);
 
                 // 2️⃣ Assign new seat
-                Seat newSeat = seatRepo.findBySeatNumber(req.getSeatNumber())
+                Seat newSeat = seatRepo.findByLibraryIdAndSeatNumber(libraryId, req.getSeatNumber())
                         .orElseThrow(() -> new RuntimeException("New seat not found"));
 
 
@@ -110,25 +135,6 @@ public class StudentController {
 
 
 
-    @GetMapping
-    public List<StudentTableResponse> getAllActiveStudents() {
-        return studentRepo
-                .findByActiveTrueAndStudentType(Student.StudentType.FULL_DAY)
-                .stream()
-                .map(StudentTableResponse::from)
-                .toList();
-    }
-
-    @PostMapping("/{id}/vacate")
-    public void vacateStudent(@PathVariable Long id) {
-
-        Student student = studentRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Student not found"));
-
-        student.setActive(false);
-        studentRepo.save(student);
-    }
-
 //  filter the student by name , phone, seat
 @GetMapping("/search")
 public List<StudentTableResponse> searchStudents(
@@ -155,34 +161,62 @@ public List<StudentTableResponse> searchStudents(
                 .toList();
     }
 
-// Subscription expired Students
-    @GetMapping("/expiring-soon")
-    public List<StudentTableResponse> expiringSoon() {
+
+    @GetMapping("/expiring-soon/{libraryId}")
+    public List<StudentTableResponse> expiringSoon(
+            @PathVariable Long libraryId,
+            Authentication auth) {
+
         LocalDate today = LocalDate.now();
         LocalDate limit = today.plusDays(2);
 
         List<Student> list =
-                studentRepo.findByActiveTrueAndExpiryDateBetween(today, limit);
+                studentRepo
+                        .findBySeat_Library_IdAndActiveTrueAndExpiryDateBetween(
+                                libraryId,
+                                today,
+                                limit
+                        );
+
         System.out.println("EXPIRING SOON COUNT = " + list.size());
-        return list.stream().map(StudentTableResponse::from).toList();
+
+        return list.stream()
+                .map(StudentTableResponse::from)
+                .toList();
     }
 
-    @GetMapping("/expired")
-    public List<StudentTableResponse> expiredStudents() {
+
+    @GetMapping("/expired/{libraryId}")
+    public List<StudentTableResponse> expiredStudents(
+            @PathVariable Long libraryId,
+            Authentication auth) {
+
         LocalDate today = LocalDate.now();
 
         List<Student> list =
-                studentRepo.findByActiveTrueAndExpiryDateBefore(today);
+                studentRepo
+                        .findBySeat_Library_IdAndActiveTrueAndExpiryDateBefore(
+                                libraryId,
+                                today
+                        );
 
         System.out.println("EXPIRED COUNT = " + list.size());
-        return list.stream().map(StudentTableResponse::from).toList();
+
+        return list.stream()
+                .map(StudentTableResponse::from)
+                .toList();
     }
 
 
-    @PostMapping("/create")
+    @PostMapping("/create/library/{libraryId}")
     public ResponseEntity<String> createStudent(
+            @PathVariable Long libraryId,
             @RequestBody StudentCreateRequest req
     ) {
+
+        Library library = libraryRepo.findById(libraryId)
+                .orElseThrow(() -> new RuntimeException("Library not found"));
+
         Student student = new Student();
 
         student.setName(req.getName());
@@ -194,15 +228,21 @@ public List<StudentTableResponse> searchStudents(
         student.setExpiryDate(LocalDate.now().plusDays(30));
         student.setActive(true);
 
-        // 🔥 CORE LOGIC
+        // 🔥 VERY IMPORTANT
+        student.setLibrary(library);
+
+        // ===============================
+        // FULL DAY STUDENT
+        // ===============================
         if (req.getStudentType() == Student.StudentType.FULL_DAY) {
 
             if (req.getSeatNumber() == null) {
                 throw new RuntimeException("Seat is required for full day student");
             }
 
-            Seat seat = seatRepo.findBySeatNumber(req.getSeatNumber())
-                    .orElseThrow(() -> new RuntimeException("Seat not found"));
+            Seat seat = seatRepo
+                    .findByLibraryIdAndSeatNumber(libraryId, req.getSeatNumber())
+                    .orElseThrow(() -> new RuntimeException("Seat not found in this library"));
 
             if (seat.isOccupied()) {
                 throw new RuntimeException("Seat already occupied");
@@ -217,18 +257,21 @@ public List<StudentTableResponse> searchStudents(
             student.setHalfDaySlot(null);
         }
 
-        if (req.getStudentType() == Student.StudentType.HALF_DAY) {
+        // ===============================
+        // HALF DAY STUDENT
+        // ===============================
+        else if (req.getStudentType() == Student.StudentType.HALF_DAY) {
 
             if (req.getHalfDaySlot() == null) {
                 throw new RuntimeException("Half day slot is required");
             }
 
-            // ❌ No seat
-            student.setSeat(null);
-            student.setSeatNumber(0);
-
+            student.setSeat(null);          // ✅ no seat
+            student.setSeatNumber(null);    // ✅ important (not 0)
             student.setStudentType(Student.StudentType.HALF_DAY);
             student.setHalfDaySlot(req.getHalfDaySlot());
+        } else {
+            throw new RuntimeException("Invalid student type");
         }
 
         studentRepo.save(student);
@@ -236,11 +279,15 @@ public List<StudentTableResponse> searchStudents(
         return ResponseEntity.ok("Student created successfully");
     }
 
-    @GetMapping("/halfday")
-    public List<HalfDayStudentResponse> getHalfDayStudents() {
+
+    @GetMapping("/halfday/library/{libraryId}")
+    public List<HalfDayStudentResponse> getHalfDayStudents(
+            @PathVariable Long libraryId
+    ) {
 
         List<Student> list =
-                studentRepo.findByStudentTypeAndActiveTrue(
+                studentRepo.findByLibrary_IdAndStudentTypeAndActiveTrue(
+                        libraryId,
                         Student.StudentType.HALF_DAY
                 );
 
