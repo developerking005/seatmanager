@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Profile Details</title>
+    <link rel="stylesheet" href="/dashboard.css">
+</head>
+<body>
+
+<div id="headerContainer"></div>
+
+<div class="content">
+    <button class="back-btn" onclick="goToDashboard()">
+        ← Back to Dashboard
+    </button>
+    <h2>Profile Details</h2>
+
+    <div class="card">
+        <h3>Admin Information</h3>
+        <p><b>Name:</b> <span id="adminName"></span></p>
+        <p><b>Phone:</b> <span id="adminPhone"></span></p>
+    </div>
+
+    <div class="card">
+        <h3>Library Information</h3>
+        <p><b>Library Name:</b> <span id="libraryName"></span></p>
+        <p><b>Total Seats:</b> <span id="totalSeats"></span></p>
+    </div>
+</div>
+
+<script>
+    fetch("/newheader.html")
+      .then(res => res.text())
+      .then(html => document.getElementById("headerContainer").innerHTML = html);
+</script>
+<script src="/newheader.js"></script>
+<script src="/profile.js"></script>
+
+</body>
+</html>

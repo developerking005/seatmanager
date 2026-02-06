@@ -1,0 +1,28 @@
+function login() {
+    fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            phone: phone.value,
+            password: password.value
+        })
+    }).then(res => {
+              if (!res.ok) {
+                  alert("Invalid credentials");
+                  return;
+              }
+
+              // 🔍 CHECK IF LIBRARY EXISTS
+              fetch("/api/libraries/exists")
+                  .then(r => r.json())
+                  .then(hasLibrary => {
+                      if (hasLibrary) {
+                          // ✅ Existing user
+                          window.location.href = "/dashboard.html";
+                      } else {
+                          // 🚨 First-time user
+                          window.location.href = "/create-library.html";
+                      }
+                  });
+          });
+}

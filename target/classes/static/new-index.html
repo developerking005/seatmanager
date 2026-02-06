@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SeatManager</title>
+    <link rel="stylesheet" href="/new-index.css">
+</head>
+<body>
+
+<!-- Background -->
+<div class="background"></div>
+
+<!-- Left Panel -->
+<div class="panel">
+    <div class="content" id="home">
+        <h1>SeatManager</h1>
+        <p>
+            Smart library seat management system to manage seats,
+            occupancy, and multiple libraries with ease.
+        </p>
+
+        <div class="actions">
+            <button class="btn" onclick="openSignup()">Sign Up</button>
+            <button class="btn outline" onclick="openLogin()">Login</button>
+        </div>
+    </div>
+
+    <!-- Login -->
+    <div class="content hidden" id="login">
+        <h2>Login</h2>
+        <input placeholder="Phone">
+        <input type="password" placeholder="Password">
+        <button class="btn">Login</button>
+
+        <p class="switch">
+            New here? <span onclick="openSignup()">Create account</span>
+        </p>
+    </div>
+
+    <!-- Signup -->
+    <div class="content hidden" id="signup">
+        <h2>Create Admin Account</h2>
+        <input placeholder="Full Name">
+        <input placeholder="Phone">
+        <input type="password" placeholder="Password">
+        <button class="btn">Sign Up</button>
+
+        <p class="switch">
+            Already have an account?
+            <span onclick="openLogin()">Login</span>
+        </p>
+    </div>
+</div>
+
+<script src="index.js"></script>
+</body>
+</html>
