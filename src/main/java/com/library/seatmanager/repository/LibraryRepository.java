@@ -13,6 +13,8 @@ public interface LibraryRepository extends JpaRepository<Library, Long> {
 
     Optional<Library> findFirstByAdminPhone(String phone);
 
+    Optional<Library> findById(Long id);
+
 
     boolean existsByAdminPhone(String phone);
 }

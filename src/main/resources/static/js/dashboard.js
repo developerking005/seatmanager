@@ -31,8 +31,8 @@ window.onload = function () {
 
   // Check library
   checkLibraryAndLoad();
-  loadingDashboardCards();
-  loadExpiryNotifications();
+//  loadingDashboardCards();
+//  loadExpiryNotifications();
 };
 
 
@@ -63,6 +63,8 @@ function checkLibraryAndLoad() {
         console.log("🏛 Library ID:", libraryId);
 
         loadSeats(libraryId);
+        loadingDashboardCards();
+        loadExpiryNotifications();
       })
       .catch(err => {
         console.error("❌ Library exists check failed", err);
@@ -233,15 +235,59 @@ function renderExpiryList(data) {
           <i class="fa-brands fa-whatsapp"></i> WhatsApp
         </button>
 
-        <button class="btn call">
-          <i class="fa-solid fa-phone"></i> Call
-        </button>
+       <button class="btn call"
+         onclick="callPerson('${s.phone}')">
+         <i class="fa-solid fa-phone"></i> Call
+       </button>
       </div>
     `;
 
     box.appendChild(div);
   });
    updateViewAllText();
+}
+
+
+function sendReminder(phone, name, seat, expiry) {
+  if (!phone) {
+    alert("Phone number not available");
+    return;
+  }
+
+  const cleanPhone = phone.replace(/\D/g, "");
+
+  const message =
+`Hello ${name} 👋
+
+Your library seat (Seat No: ${seat})
+is expiring on ${expiry}.
+
+Please renew to continue your seat.
+Thank you 🙏`;
+
+  const encodedMessage = encodeURIComponent(message);
+
+  const url = `https://wa.me/91${cleanPhone}?text=${encodedMessage}`;
+
+  window.open(url, "_blank");
+}
+
+
+
+function callPerson(phone) {
+
+  if (!phone) {
+    alert("Phone number not available");
+    return;
+  }
+
+  if (!confirm(`Call ${phone}?`)) return;
+
+  // Remove spaces or special chars
+  const cleanPhone = phone.replace(/\D/g, "");
+
+  // Open dialer
+  window.location.href = `tel:+91${cleanPhone}`;
 }
 
 
@@ -475,10 +521,6 @@ const CURRENT_LIBRARY_ID =
       });
     });
 }
-
-
-
-
 
 
 

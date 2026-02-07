@@ -168,3 +168,7 @@ function loadStudentProfile(s) {
   document.getElementById("pExpire").innerText =
     s.endDate ? formatDate(s.endDate) : "-";
 }
+
+function goTo(path) {
+  window.location.href = path;
+}

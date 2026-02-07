@@ -19,7 +19,7 @@ function signup() {
     .then(res => {
         if (res.ok) {
             // 🔥 DIRECTLY GO TO CREATE LIBRARY
-             window.location.href = "/createlibrary.html";
+            window.location.href = "/createlibrary.html";
         } else {
             return res.text().then(msg => {
                 alert("Signup failed: " + msg);

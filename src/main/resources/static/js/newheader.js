@@ -9,7 +9,7 @@ function toggleProfileMenu() {
 
 function logout() {
   fetch("/logout", { method: "POST" })
-    .then(() => window.location.href = "/login.html");
+    .then(() => window.location.href = "/newindex.html");
 }
 
 // close dropdown on outside click
@@ -34,4 +34,35 @@ document.addEventListener("DOMContentLoaded", () => {
       link.classList.remove("active");
     }
   });
+});
+
+
+
+
+document.addEventListener("DOMContentLoaded", () => {
+  const currentPath = window.location.pathname;
+
+  document.querySelectorAll(".mobile-footer .nav-item").forEach(item => {
+    if (currentPath.endsWith(item.dataset.path)) {
+      item.classList.add("active");
+    }
+  });
+});
+
+
+function toggleMobileMenu() {
+  const menu = document.getElementById("mobileMenu");
+  menu.classList.toggle("hidden");
+}
+
+/* Optional: close menu on outside click */
+document.addEventListener("click", function (e) {
+  const menu = document.getElementById("mobileMenu");
+  const btn = document.querySelector(".mobile-menu-btn");
+
+  if (!menu || menu.classList.contains("hidden")) return;
+
+  if (!menu.contains(e.target) && !btn.contains(e.target)) {
+    menu.classList.add("hidden");
+  }
 });

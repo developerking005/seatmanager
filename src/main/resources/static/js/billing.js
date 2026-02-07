@@ -179,7 +179,7 @@ function deleteExpense(id) {
 
 
 function editExpense(id) {
-  fetch(`/api/billing/expenses/library/${id}`)
+  fetch(`/api/billing/expenses/library/${CURRENT_LIBRARY_ID}`)
     .then(res => res.json())
     .then(list => {
       const e = list.find(x => x.id === id);
@@ -202,6 +202,9 @@ function closeEditExpense() {
     .classList.add("hidden");
 }
 
+function goTo(path) {
+  window.location.href = path;
+}
 
 function updateExpense() {
   const id = editId.value;

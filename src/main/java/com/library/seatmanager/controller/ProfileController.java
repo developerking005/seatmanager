@@ -8,8 +8,11 @@ import com.library.seatmanager.repository.LibraryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/profile")
@@ -21,15 +24,15 @@ public class ProfileController {
     @Autowired
     private LibraryRepository libraryRepo;
 
-    @GetMapping
-    public ProfileDetailsResponse getProfile(Authentication auth) {
+    @GetMapping("/library/{libraryId}")
+    public ProfileDetailsResponse getProfile(@PathVariable Long libraryId, Authentication auth) {
 
         String phone = auth.getName();
 
         Admin admin = adminRepo.findByPhone(phone)
                 .orElseThrow(() -> new RuntimeException("Admin not found"));
 
-        Library lib = libraryRepo.findAll().get(0);
+        Library lib = libraryRepo.findById(libraryId).get();
 
         return new ProfileDetailsResponse(
                 admin.getName(),
