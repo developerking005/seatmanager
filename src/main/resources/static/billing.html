@@ -4,6 +4,8 @@
 <head>
     <title>Library Seat Manager</title>
     <link rel="stylesheet" href="css/billing.css">
+    <!--    <link rel="stylesheet" href="css/dashboard.css">-->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://kit.fontawesome.com/70513bf846.js" crossorigin="anonymous"></script>
 </head>
 <body>
@@ -104,6 +106,31 @@
         </div>
     </div>
 </div>
+
+
+<!-- MOBILE FOOTER NAV -->
+<div class="mobile-footer">
+    <div class="nav-item" onclick="goTo('/dashboard.html')">
+        <i class="fa-solid fa-house"></i>
+        <span>Home</span>
+    </div>
+
+    <div class="nav-item active" onclick="goTo('/billing.html')">
+        <i class="fa-solid fa-wallet"></i>
+        <span>Billing</span>
+    </div>
+
+    <div class="nav-item" onclick="goTo('/students.html')">
+        <i class="fa-solid fa-user-graduate"></i>
+        <span>Students</span>
+    </div>
+
+    <div class="nav-item" onclick="goTo('/profile.html')">
+        <i class="fa-solid fa-user"></i>
+        <span>Profile</span>
+    </div>
+</div>
+
 
 <script>
     fetch("/newheader.html")

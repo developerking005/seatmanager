@@ -1,0 +1,49 @@
+/* =========================
+   PROFILE – MOBILE ONLY
+========================= */
+
+@media (max-width: 768px) {
+
+  /* Page wrapper */
+  .content {
+    padding: 16px;
+    padding-bottom: 90px; /* footer safe */
+  }
+
+  /* Hide desktop back button on mobile */
+  .back-btn {
+    display: none;
+  }
+
+  /* Page title */
+  .content h2 {
+    font-size: 20px;
+    margin-bottom: 16px;
+  }
+
+  /* Profile cards */
+  .card {
+    border-radius: 16px;
+    padding: 16px;
+    margin-bottom: 16px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+  }
+
+  .card h3 {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+
+  .card p {
+    font-size: 14px;
+    margin: 8px 0;
+    color: #374151;
+  }
+
+  .card p b {
+    display: inline-block;
+    min-width: 110px;
+    color: #6b7280;
+    font-weight: 600;
+  }
+}

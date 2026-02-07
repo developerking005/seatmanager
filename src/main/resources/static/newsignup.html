@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign Up | SeatManager</title>
+    <link rel="stylesheet" href="css/newsignup.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<div class="page">
+    <div class="card">
+        <h2>Sign Up</h2>
+
+        <input id="library" placeholder="Library Name">
+        <input id="name" placeholder="Admin Name">
+        <input id="email" placeholder="Email">
+        <input id="phone" placeholder="Phone Number">
+        <input id="password" type="password" placeholder="Password">
+        <input id="confirm" type="password" placeholder="Confirm Password">
+
+        <label class="terms">
+            <input type="checkbox">
+            I agree to the <span>Terms & Privacy</span>
+        </label>
+
+        <button onclick="signup()">Create Account</button>
+
+        <p class="switch">
+            Already have an account?
+            <a href="/newlogin.html">Log In</a>
+        </p>
+    </div>
+</div>
+
+<script src="js/signup.js"></script>
+</body>
+</html>

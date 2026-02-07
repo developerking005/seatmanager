@@ -183,7 +183,10 @@ after this css is for Header section
 
 */
 
+/*
 
+
+for temporary
 .modal {
   position: fixed;
   inset: 0;
@@ -207,6 +210,8 @@ after this css is for Header section
   justify-content: space-between;
   margin-top: 12px;
 }
+
+*/
 
 
 .table {
@@ -691,13 +696,13 @@ after this css is for Header section
 =========================== */
 
 
-/* Hide header on mobile */
+/* Hide header on mobile
 @media (max-width: 768px) {
   #headerContainer {
     display: none;
   }
 }
-
+*/
 
 body {
   padding-bottom: 70px;

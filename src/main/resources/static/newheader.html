@@ -11,7 +11,7 @@
     <!-- LEFT -->
     <div class="header-left" onclick="goToDashboard()">
         <img
-                src="/logo.png"
+                src="images/logo.png"
                 alt="Library Logo"
                 class="logo"
         />
@@ -28,7 +28,14 @@
 
     <!-- RIGHT PROFILE -->
     <div class="header-right">
-        <div class="profile-wrapper">
+
+        <!-- MOBILE HAMBURGER -->
+        <div class="mobile-menu-btn" onclick="toggleMobileMenu()">
+            <i class="fa-solid fa-bars"></i>
+        </div>
+
+        <!-- DESKTOP PROFILE -->
+        <div class="profile-wrapper desktop-only">
             <div class="profile-info" onclick="toggleProfileMenu()">
                 <div class="profile-text">
                     <strong id="adminName">Admin User</strong>
@@ -44,6 +51,16 @@
                 <a onclick="logout()">Logout</a>
             </div>
         </div>
+
+    </div>
+
+    <!-- MOBILE DROPDOWN -->
+    <div id="mobileMenu" class="mobile-menu hidden">
+        <a href="/profile.html">Profile</a>
+        <a href="/students.html">Students</a>
+        <a href="/billing.html">Billing</a>
+        <hr>
+        <a onclick="logout()">Logout</a>
     </div>
 
 </header>

@@ -111,6 +111,31 @@
     </div>
 </div>
 
+
+<!-- MOBILE FOOTER NAV -->
+<div class="mobile-footer">
+    <div class="nav-item active" onclick="goTo('/dashboard.html')">
+        <i class="fa-solid fa-house"></i>
+        <span>Home</span>
+    </div>
+
+    <div class="nav-item" onclick="goTo('/billing.html')">
+        <i class="fa-solid fa-wallet"></i>
+        <span>Billing</span>
+    </div>
+
+    <div class="nav-item" onclick="goTo('/students.html')">
+        <i class="fa-solid fa-user-graduate"></i>
+        <span>Students</span>
+    </div>
+
+    <div class="nav-item" onclick="goTo('/profile.html')">
+        <i class="fa-solid fa-user"></i>
+        <span>Profile</span>
+    </div>
+</div>
+
+
 <script>
     fetch("/newheader.html")
         .then(res => res.text())

@@ -1,0 +1,139 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Segoe UI", Arial, sans-serif;
+}
+
+body {
+    height: 100vh;
+}
+
+.page {
+    height: 100%;
+    background: url("../images/index-background.png") center/cover no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card {
+    background: white;
+    width: 340px;
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.card h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 22px;
+}
+
+.card input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 12px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    font-size: 14px;
+}
+
+.card input:focus {
+    outline: none;
+    border-color: #22c55e;
+}
+
+.forgot {
+    text-align: right;
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 15px;
+    cursor: pointer;
+}
+
+.card button {
+    width: 100%;
+    padding: 14px;
+    background: #22c55e;
+    border: none;
+    border-radius: 25px;
+    color: white;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.card button:hover {
+    background: #16a34a;
+}
+
+.switch {
+    margin-top: 15px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.switch a {
+    color: #22c55e;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+
+
+/* MOBILE – LARGE CARD LIKE REFERENCE */
+@media (max-width: 480px) {
+
+    body {
+        overflow: hidden;
+    }
+
+    .page {
+        padding: 0 16px;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .card {
+        width: 100%;
+        max-width: 420px;
+
+        padding: 42px 32px;
+        border-radius: 28px;
+
+        box-shadow: 0 25px 60px rgba(0,0,0,0.18);
+    }
+
+    .card h2 {
+        font-size: 30px;
+        margin-bottom: 28px;
+        font-weight: 700;
+    }
+
+    .card input {
+        height: 56px;
+        font-size: 17px;
+        padding: 0 18px;
+        border-radius: 14px;
+        margin-bottom: 18px;
+    }
+
+    .forgot {
+        font-size: 15px;
+        margin: 8px 0 24px;
+    }
+
+    .card button {
+        height: 58px;
+        font-size: 18px;
+        border-radius: 34px;
+        margin-top: 6px;
+    }
+
+    .switch {
+        font-size: 16px;
+        margin-top: 22px;
+    }
+}

@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Profile Details</title>
-    <link rel="stylesheet" href="/dashboard.css">
+    <link rel="stylesheet" href="css/dashboard.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/profile.css">
+    <script src="https://kit.fontawesome.com/70513bf846.js" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -28,13 +31,38 @@
     </div>
 </div>
 
+
+<!-- MOBILE FOOTER NAV -->
+<div class="mobile-footer">
+    <div class="nav-item" onclick="goTo('/dashboard.html')">
+        <i class="fa-solid fa-house"></i>
+        <span>Home</span>
+    </div>
+
+    <div class="nav-item" onclick="goTo('/billing.html')">
+        <i class="fa-solid fa-wallet"></i>
+        <span>Billing</span>
+    </div>
+
+    <div class="nav-item" onclick="goTo('/students.html')">
+        <i class="fa-solid fa-user-graduate"></i>
+        <span>Students</span>
+    </div>
+
+    <div class="nav-item active" onclick="goTo('/profile.html')">
+        <i class="fa-solid fa-user"></i>
+        <span>Profile</span>
+    </div>
+</div>
+
+
 <script>
     fetch("/newheader.html")
       .then(res => res.text())
       .then(html => document.getElementById("headerContainer").innerHTML = html);
 </script>
-<script src="/newheader.js"></script>
-<script src="/profile.js"></script>
+<script src="js/newheader.js"></script>
+<script src="js/profile.js"></script>
 
 </body>
 </html>

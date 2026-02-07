@@ -112,6 +112,37 @@
 
 
 
+/* ===== BILLING MODAL SYSTEM ===== */
+
+.hidden {
+  display: none !important;
+}
+
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10000;
+}
+
+.modal-content {
+  background: #ffffff;
+  padding: 24px;
+  border-radius: 16px;
+  width: 420px;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
 
 
 
@@ -323,3 +354,168 @@
 .card-icon.projected { color: #9333ea; }
 
 
+
+
+/* =========================
+   MOBILE – BILLING PAGE BASE
+========================= */
+@media (max-width: 768px) {
+
+  .billing-page {
+    padding: 16px;
+    padding-bottom: 90px; /* footer safe */
+  }
+}
+
+/* =========================
+   MOBILE – BILLING SUMMARY CARDS
+========================= */
+@media (max-width: 600px) {
+
+  .billing-cards {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 14px;
+  }
+
+  .billing-card {
+    padding: 16px;
+  }
+
+  .billing-card h2 {
+    font-size: 22px; /* same as dashboard stat */
+    margin: 12px 0;
+  }
+
+  .billing-card span {
+    font-size: 12px;
+  }
+}
+
+
+/* =========================
+   MOBILE – BILLING HEADER
+========================= */
+@media (max-width: 768px) {
+
+  .billing-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  .billing-header .primary-btn {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+/* =========================
+   MOBILE – EXPENSE TABLE
+========================= */
+@media (max-width: 768px) {
+
+  .expense-table {
+    min-width: 700px;
+  }
+
+  .billing-card {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .expense-table th,
+  .expense-table td {
+    white-space: nowrap;
+    font-size: 13px;
+  }
+}
+
+
+/* =========================
+   MOBILE – MODALS
+========================= */
+@media (max-width: 600px) {
+
+  .modal {
+    align-items: flex-end;
+  }
+
+  .modal-content {
+    width: 100%;
+    max-height: 90vh;
+    border-radius: 16px 16px 0 0;
+    overflow-y: auto;
+  }
+
+  .modal-actions {
+    flex-direction: column;
+  }
+
+  .modal-actions button {
+    width: 100%;
+  }
+}
+
+
+/* =========================
+   Mobile Footer CSS Start
+========================= */
+
+
+.mobile-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+
+  height: 64px;
+  background: #ffffff;
+  border-top: 1px solid #e5e7eb;
+
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+
+  z-index: 2000;
+}
+
+.mobile-footer .nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 11px;
+  color: #6b7280;
+  cursor: pointer;
+}
+
+.mobile-footer .nav-item i {
+  font-size: 20px;
+  margin-bottom: 3px;
+}
+
+.mobile-footer .nav-item.active {
+  color: #2563eb;
+}
+
+/* DESKTOP: HIDE FOOTER */
+@media (min-width: 768px) {
+  .mobile-footer {
+    display: none;
+  }
+}
+
+
+/* =========================
+   Mobile Footer CSS end
+========================= */
+
+
+
+
+
+/* Hide header on mobile
+@media (max-width: 768px) {
+  #headerContainer {
+    display: none;
+  }
+} */

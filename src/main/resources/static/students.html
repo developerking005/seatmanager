@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>Students</title>
-    <link rel="stylesheet" href="css/dashboard.css">
+    <!--    <link rel="stylesheet" href="css/dashboard.css">-->
     <link rel="stylesheet" href="css/students.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://kit.fontawesome.com/70513bf846.js" crossorigin="anonymous"></script>
 </head>
 <body>
 
@@ -109,39 +111,64 @@
             </div>
 
         </div>
-</div>
+    </div>
 
 
-<div id="editModal" class="modal hidden">
-    <div class="modal-content">
-        <h3>Edit Student</h3>
+    <div id="editModal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Edit Student</h3>
 
-        <input type="hidden" id="editId">
+            <input type="hidden" id="editId">
 
-        <label>Name</label>
-        <input id="editName">
+            <label>Name</label>
+            <input id="editName">
 
-        <label>Phone</label>
-        <input id="editPhone">
+            <label>Phone</label>
+            <input id="editPhone">
 
-        <label>Seat Number</label>
-        <input id="editSeat" type="number">
+            <label>Seat Number</label>
+            <input id="editSeat" type="number">
 
-        <label>End Date</label>
-        <input id="editEndDate" type="date">
+            <label>End Date</label>
+            <input id="editEndDate" type="date">
 
-        <div class="modal-actions">
-            <button onclick="saveStudent()">Save</button>
-            <button onclick="closeModal()">Cancel</button>
+            <div class="modal-actions">
+                <button onclick="saveStudent()">Save</button>
+                <button onclick="closeModal()">Cancel</button>
+            </div>
         </div>
     </div>
-</div>
 
-<script>
-    fetch("/newheader.html")
-      .then(res => res.text())
-      .then(html => document.getElementById("headerContainer").innerHTML = html);
-</script>
+
+    <!-- MOBILE FOOTER NAV -->
+    <div class="mobile-footer">
+        <div class="nav-item" onclick="goTo('/dashboard.html')">
+            <i class="fa-solid fa-house"></i>
+            <span>Home</span>
+        </div>
+
+        <div class="nav-item" onclick="goTo('/billing.html')">
+            <i class="fa-solid fa-wallet"></i>
+            <span>Billing</span>
+        </div>
+
+        <div class="nav-item active" onclick="goTo('/students.html')">
+            <i class="fa-solid fa-user-graduate"></i>
+            <span>Students</span>
+        </div>
+
+        <div class="nav-item" onclick="goTo('/profile.html')">
+            <i class="fa-solid fa-user"></i>
+            <span>Profile</span>
+        </div>
+    </div>
+
+
+    <script>
+        fetch("/newheader.html")
+          .then(res => res.text())
+          .then(html => document.getElementById("headerContainer").innerHTML = html);
+    </script>
 
     <script src="js/newheader.js"></script>
     <script src="js/students.js"></script>
