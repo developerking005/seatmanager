@@ -10,6 +10,66 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 public class SecurityConfig {
 
+//    @Bean
+//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+//
+//        http
+//                .csrf(csrf -> csrf.disable())
+//                .authorizeHttpRequests(auth -> auth
+//                        .requestMatchers(
+//                                "/login.html",
+//                                "/otp.html",
+//
+//                                // login & otp assets
+//                                "/login.css",
+//                                "/login.js",
+//                                "/otp.css",
+//                                "/otp.js",
+//
+//                                // shared assets
+//                                "/header.html",
+//                                "/header.js",
+//
+//                                // dashboard assets
+//                                "/dashboard.css",
+//                                "/dashboard.js",
+//
+//                                // profile assets (THIS WAS MISSING)
+//                                "/profile.js",
+//
+//                                // misc
+//                                "/favicon.ico",
+//
+//                                "/index.html",
+//                                "/index.css",
+//
+//                                "/new-index.html",
+//                                "/new-index.css",
+//                                "/new-index.js",
+//
+//                                "/signup.html",
+//                                "/signup.js",
+//
+//                                "/login.html",
+//                                "/login.js",
+//
+//                                "/create-library.html",
+//                                "/create-library.js",
+//
+//                                // auth APIs
+//                                "/api/auth/**"
+//                        ).permitAll()
+//                        .anyRequest().authenticated()
+//                )
+//                .formLogin(form -> form.disable())
+//                .logout(logout -> logout
+//                        .logoutUrl("/api/auth/logout")
+//                        .logoutSuccessUrl("/login.html")
+//                );
+//        return http.build();
+//    }
+
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -17,46 +77,18 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/login.html",
-                                "/otp.html",
-
-                                // login & otp assets
-                                "/login.css",
-                                "/login.js",
-                                "/otp.css",
-                                "/otp.js",
-
-                                // shared assets
-                                "/header.html",
-                                "/header.js",
-
-                                // dashboard assets
-                                "/dashboard.css",
-                                "/dashboard.js",
-
-                                // profile assets (THIS WAS MISSING)
-                                "/profile.js",
-
-                                // misc
-                                "/favicon.ico",
-
+                                "/",
                                 "/index.html",
-                                "/index.css",
-
-                                "/new-index.html",
-                                "/new-index.css",
-                                "/new-index.js",
-
-                                "/signup.html",
-                                "/signup.js",
-
                                 "/login.html",
-                                "/login.js",
-
+                                "/signup.html",
+                                "/otp.html",
+                                "/dashboard.html",
                                 "/create-library.html",
-                                "/create-library.js",
 
-                                // auth APIs
+                                "/css/**",
+                                "/js/**",
+                                "/images/**",
+
                                 "/api/auth/**"
                         ).permitAll()
                         .anyRequest().authenticated()
@@ -66,9 +98,9 @@ public class SecurityConfig {
                         .logoutUrl("/api/auth/logout")
                         .logoutSuccessUrl("/login.html")
                 );
+
         return http.build();
     }
-
 
 @Bean
 public PasswordEncoder passwordEncoder() {
