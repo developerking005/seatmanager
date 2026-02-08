@@ -204,7 +204,7 @@ function renderExpiryList(data) {
 
    console.log(" Data ", data);
 
-  const alertsToShow = showAllAlerts ? allAlerts : allAlerts.slice(0, 3);
+  const alertsToShow = showAllAlerts ? allAlerts : allAlerts.slice(0, 20);
 
   alertsToShow.forEach(s => {
     const statusClass = getExpiryClass(s.expireDate);
