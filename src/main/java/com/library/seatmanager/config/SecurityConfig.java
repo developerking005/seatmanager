@@ -53,7 +53,7 @@ public class SecurityConfig {
 //                                "/login.html",
 //                                "/login.js",
 //
-//                                "/create-library.html",
+//                                "/library.html",
 //                                "/create-library.js",
 //
 //                                // auth APIs
@@ -87,7 +87,7 @@ public class SecurityConfig {
                                 "/signup.html",
                                 "/otp.html",
                                 "/dashboard.html",
-                                "/create-library.html",
+                                "/library.html",
 
                                 "/css/**",
                                 "/js/**",

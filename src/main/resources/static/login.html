@@ -1,23 +1,30 @@
-<meta charset="UTF-8">
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Library Seat Manager</title>
+    <meta charset="UTF-8">
+    <title>Login | SeatManager</title>
     <link rel="stylesheet" href="css/login.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-<h2>Login</h2>
-<h2>Login</h2>
 
-<input id="phone" placeholder="Phone">
-<input id="password" type="password">
+<div class="page">
+    <div class="card">
+        <h2>Log In</h2>
 
-<button onclick="login()">Login</button>
+        <input id="phone" placeholder="Email or Phone">
+        <input id="password" type="password" placeholder="Password">
 
-<p>
-    New here?
-    <a href="/signup.html">Create account</a>
-</p>
+        <p class="forgot">Forgot Password?</p>
+
+        <button onclick="login()">Log In</button>
+
+        <p class="switch">
+            Don’t have an account?
+            <a href="/newsignup.html">Sign Up</a>
+        </p>
+    </div>
+</div>
 
 <script src="js/login.js"></script>
 </body>

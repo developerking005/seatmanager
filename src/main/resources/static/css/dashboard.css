@@ -800,11 +800,20 @@ body {
 }
 
 @media (max-width: 768px) {
+
+
+  .alert-card {
+    max-height: 320px;        /* 👈 HARD LIMIT */
+    overflow: hidden;
+  }
+
   .alert-list {
     display: flex;
     gap: 12px;
     overflow-x: auto;
+    overflow-y: hidden;
     padding-bottom: 10px;
+    max-height: 260px;
   }
 
   .alert-item {
@@ -823,6 +832,23 @@ body {
 
 
 @media (max-width: 768px) {
+
+/* Legend */
+.seat-legend span {
+  margin-left: 5px;
+  margin-right: 10px;
+  font-size: 13px;
+  color: #374151;
+}
+
+.seat-legend i {
+  font-size: 10px;
+  margin-right: 3px;
+}
+
+.seat-legend .booked { color: #9ca3af; }
+.seat-legend .vacant { color: #10b981; }
+
   .seat-container {
     grid-template-columns: repeat(5, 1fr);
     gap: 8px;
@@ -912,5 +938,53 @@ body {
     height: auto;
     font-size: 12px;
     border-radius: 10px;
+  }
+}
+
+
+
+@media (max-width: 768px) {
+
+
+.alert-list::-webkit-scrollbar {
+  height: 4px;
+}
+
+.alert-list::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 999px;
+}
+
+  .alert-item {
+    min-width: 260px;
+    max-width: 260px;
+    padding: 14px;
+    border-radius: 14px;
+    background: #ffffff;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.08);
+    flex-shrink: 0; /* 👈 STOP WRAPPING */
+  }
+
+  .alert-actions {
+    margin-top: 10px;
+    gap: 8px;
+  }
+
+  .btn.whatsapp,
+  .btn.call {
+    padding: 10px;
+    font-size: 13px;
+  }
+}
+
+
+@media (max-width: 768px) {
+
+  .dashboard-main {
+    gap: 16px;   /* reduce vertical gap */
+  }
+
+  .seat-card {
+    margin-bottom: 12px;
   }
 }
