@@ -93,7 +93,8 @@ public class SecurityConfig {
                                 "/js/**",
                                 "/images/**",
 
-                                "/api/auth/**"
+                                "/api/auth/**",
+                                "/api/student/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
